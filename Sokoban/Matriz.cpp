@@ -51,13 +51,14 @@ void Matriz::cargarMatriz(string mapa) {
 		cout << "No se encontro el archivo" << endl;
 	}
 	else {
-		Nodo* nodo;
+		Nodo* nodo, *aux = NULL;
+		
 		caracter = file.get();
 		caracter = file.get();
 		while (!file.eof()) {
 			caracter = file.get();
 			nodo = new Nodo(caracter);
-			if (ini == NULL) {
+			if (ini == NULL) { // coloca el primer nodo
 				ini = nodo;
 				fin = nodo;
 				finAb = nodo;				
@@ -66,10 +67,60 @@ void Matriz::cargarMatriz(string mapa) {
 				ini->setAbajo(NULL);
 				ini->setArriba(NULL);
 			}
-			else {
-				fin->setSig(nodo);
-				nodo->setAnt(fin);
-				fin = nodo;
+			else
+			{
+
+				// comprobacion si el caracter es  diferente de un salto de linea
+				if (nodo->getDato()[0] != 10) 
+				{
+
+					//Colocacion del siguiente nodo despues de fin : conexion horizontal
+					fin->setSig(nodo);
+					nodo->setAnt(fin);
+					nodo->setSig(NULL);
+					nodo->setAbajo(NULL);
+
+
+					if (fin->getArriba() == NULL || fin->getArriba()->getSig() == NULL) {
+						// si no hay nodo arriba en fin ->NULL
+						// si en fin->arriba->sig es NULL-> NULL
+						nodo->setArriba(NULL);
+					}
+					else {
+						// realizamos conexion vertical
+						nodo->setArriba(fin->getArriba()->getSig());
+						fin->getArriba()->getSig()->setAbajo(nodo);
+					}
+
+					fin = nodo;// avanza fin a la siguiente posicion
+				}
+				else // si el caracter es un salto de linea -revisar- puede ser que este insertando el salto de linea al inicio de una nueva fila
+				{
+					aux = ini;
+					// recorrer la lista para abajo en la primer columna con aux
+					while (aux != NULL) {
+						// si el siguiente  no es nulo se avanza
+						if (aux->getAbajo() != NULL) {
+							aux = aux->getAbajo();
+						}
+						else {
+							// si el siguiente es nulo se detiene el avanze
+							// encontrando el nodo sobre el que se va a insertar debajo el nuevo nodo
+							break;
+						}
+					}
+
+					//insertar el nuevo nodo haciendo las conexiones
+
+					nodo->setAnt(NULL);// conexioneshorizontales
+					nodo->setSig(NULL);
+					aux->setAbajo(nodo);// conexiones verticales
+					nodo->setArriba(aux);
+					nodo->setAbajo(NULL);
+
+					fin = nodo;// avanza fin a la siguiente posicion que seria el inicio de una nueva fila
+				}
+
 			}
 		}
 		file.close();
