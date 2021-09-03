@@ -1,12 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include<iostream>
 #include "Matriz.h"
+#include "Juego.h"
 int main()
 {
-    Matriz mat;
+    Juego game;
+    game.mostrarVentana();
 
-    mat.cargarMatriz("Mapa1");
-    mat.mostrar();
+    //Matriz mat;
+
+    //mat.cargarMatriz("Mapa1");
+    //mat.mostrar();
 
     /*sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     sf::CircleShape shape(100.f);
