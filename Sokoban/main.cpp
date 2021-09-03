@@ -4,8 +4,8 @@
 #include "Juego.h"
 int main()
 {
-    Juego game;
-    game.mostrarVentana();
+    Juego *game = new Juego();
+    game->mostrarVentana();
 
     //Matriz mat;
 

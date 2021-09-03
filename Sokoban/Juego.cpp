@@ -4,13 +4,16 @@ using namespace sf;
 
 Juego::Juego() {
 
-    ventana.create(VideoMode(800, 600), "SOKOBAN");
-
+    ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
+    imagen = new Texture();
+    sprite = new Sprite();
+    imagen->loadFromFile("caja.png");
+    sprite->setTexture(*imagen);
 }
 
 void Juego::mostrarVentana() // Loop principal
 {
-    while (ventana.isOpen())
+    while (ventana->isOpen())
     {
         dibujarVentana();
     }
@@ -23,19 +26,19 @@ void Juego::dibujarVentana()
     procesarEventos();
 
     //  Limpieza de pantalla
-    ventana.clear(Color::White);
+    ventana->clear(Color::White);
 
-    //Area de dibujo de cosas
+    //Area de dibujo de cosas    
     graficar();
 
     // mostar pantalla
-    ventana.display();
+    ventana->display();
 }
 
 void Juego::procesarEventos()
 {
     sf::Event event;
-    while (ventana.pollEvent(event)) // pollevent : escuchar evento 
+    while (ventana->pollEvent(event)) // pollevent : escuchar evento 
     {
         //if (event.type == sf::Event::Closed)
         //    ventana.close();
@@ -44,7 +47,7 @@ void Juego::procesarEventos()
         {
         case event.Closed:
         {
-            ventana.close();
+            ventana->close();
             break;
         }
         default:
@@ -57,17 +60,14 @@ void Juego::graficar()
 {
     // lo mas seguro aqui hay que llamar al metodo que crea el menu
 
+    ventana->draw(*sprite);
+
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
-    ventana.draw(shape);
+    ventana->draw(shape);
 
-
-    //Texture textura;
-    //textura.loadFromFile("caja.png");
-    //Sprite sprt;
-    //sprt.setTexture(textura);
-    //sprt.setPosition(100, 100);
-    //ventana.draw(sprt);
+    
+    
 
     //if (!texture.loadFromFile("caja.png", sf::IntRect(10, 10, 32, 32)))
     //{

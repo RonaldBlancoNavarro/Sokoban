@@ -11,8 +11,9 @@ using namespace std;
 class Juego {
 private:
 	Matriz mat;
-	RenderWindow ventana; // con punteros por que sino jode cada rato
-
+	RenderWindow *ventana; // con punteros por que sino jode cada rato
+	Texture *imagen;
+	Sprite *sprite;
 public:
 
 	Juego();
