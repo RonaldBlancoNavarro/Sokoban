@@ -7,13 +7,24 @@ Juego::Juego() {
     ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
-    imagen->loadFromFile("caja.png");
+    imagen->loadFromFile("caja.png", sf::IntRect(0, 0, 800, 600));
     sprite->setTexture(*imagen);
+    sprite->setScale(800.f / sprite->getTexture()->getSize().x, 600.f / sprite->getTexture()->getSize().y); // tamaño deseado dividido tamaño actual
 
     font = new Font();
     font->loadFromFile("HU The Game.ttf");
 
-    btn = new Boton(200, 200, 150, 80, &*font, "Prueba", 25, Color::Blue, Color::Green, Color::Red);
+    titulo.setFont(*font);
+    titulo.setString("-SOKOBAN-");
+    titulo.setCharacterSize(50);
+    titulo.setFillColor(Color::White);
+    titulo.setPosition(400 - titulo.getGlobalBounds().width / 2.f, 50);
+
+
+    btnNuevoJuego = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 180, 150, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
+    btnCargarJuego = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 300, 150, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
+    btnSalir = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 420, 150, 80, &*font, "Salir", 25, Color::Red, Color::Green, Color::Black);
+
 }
 
 void Juego::mostrarVentana() // Loop principal
@@ -22,7 +33,6 @@ void Juego::mostrarVentana() // Loop principal
     {
         dibujarVentana();
     }
-
 }
 
 void Juego::dibujarVentana()
@@ -45,26 +55,17 @@ void Juego::procesarEventos()
     sf::Event event;
     while (ventana->pollEvent(event)) // pollevent : escuchar evento 
     {
-        if (event.type == sf::Event::Closed){
+        if (event.type == sf::Event::Closed) {
             ventana->close();
         }
 
-        //switch (event.type)
-        //{
-        //case event.Closed:
-        //{
-        //    ventana->close();
-        //    break;
-        //}
-        //default:
-        //    break;
-        //}
-
-        // esto se podria mejorar 
         // get mouse position
-        sf::Vector2i position = sf::Mouse::getPosition(*ventana);
-        Vector2f vec = sf::Vector2f(position);
-        btn->actualizarBoton(vec);
+        Vector2f posMouse = sf::Vector2f(sf::Mouse::getPosition(*ventana));
+
+        btnNuevoJuego->actualizarBoton(posMouse);
+        btnCargarJuego->actualizarBoton(posMouse);
+        btnSalir->actualizarBoton(posMouse);
+
     }
 }
 
@@ -72,22 +73,23 @@ void Juego::graficar()
 {
     // lo mas seguro aqui hay que llamar al metodo que crea el menu
 
-    ventana->draw(*sprite);
+    ventana->draw(*sprite); //imagen
 
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-    ventana->draw(shape);
+    ventana->draw(titulo);
 
-    if (btn->procesarBoton(&*ventana)) {
-        cout << "Hola" << endl;
-        btn->setEstadoBoton(BTN_INACTIVO);
+    if (btnNuevoJuego->procesarBoton(&*ventana)) { // Botones
+        cout << "Nuevo Juego" << endl;
+        btnNuevoJuego->setEstadoBoton(BTN_INACTIVO);
     }
-    
-    Text texto;
-    texto.setFont(*font);
-    texto.setString("Texto");
-    texto.setCharacterSize(40);
-    texto.setPosition(400, 300);
 
-    ventana->draw(texto);
+    if (btnCargarJuego->procesarBoton(&*ventana)) {
+        cout << "Cargar Juego" << endl;
+        btnCargarJuego->setEstadoBoton(BTN_INACTIVO);
+    }
+
+    if (btnSalir->procesarBoton(&*ventana)) {
+        cout << "Salir Juego" << endl;
+        btnSalir->setEstadoBoton(BTN_INACTIVO);
+    }
+
 }

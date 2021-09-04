@@ -12,12 +12,15 @@ using namespace std;
 class Juego {
 private:
 	Matriz mat;
-	RenderWindow *ventana; // con punteros por que sino jode cada rato
-	Texture *imagen;
-	Sprite *sprite;
-
+	RenderWindow* ventana;
+	Texture* imagen;
+	Sprite* sprite;
 	Font* font;
-	Boton* btn;
+	Text titulo;
+
+	Boton* btnNuevoJuego;
+	Boton* btnCargarJuego;
+	Boton* btnSalir;
 public:
 
 	Juego();
