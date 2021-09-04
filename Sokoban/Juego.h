@@ -3,6 +3,7 @@
 #define JUEGO_
 #include <SFML/Graphics.hpp>
 #include "Matriz.h"
+#include "Boton.h"
 #include <iostream>
 
 using namespace sf;// este es para usar el SFML
@@ -14,6 +15,9 @@ private:
 	RenderWindow *ventana; // con punteros por que sino jode cada rato
 	Texture *imagen;
 	Sprite *sprite;
+
+	Font* font;
+	Boton* btn;
 public:
 
 	Juego();

@@ -147,12 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boton.cpp" />
     <ClCompile Include="Juego.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matriz.cpp" />
     <ClCompile Include="Nodo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boton.h" />
     <ClInclude Include="Juego.h" />
     <ClInclude Include="Matriz.h" />
     <ClInclude Include="Nodo.h" />
