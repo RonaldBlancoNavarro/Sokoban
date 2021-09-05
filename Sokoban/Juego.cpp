@@ -4,8 +4,7 @@ using namespace sf;
 
 Juego::Juego() {
     mat = new Matriz();
-    mat->cargarMatriz("Mapa1");
-    posicion = { 0,0 };
+    mat->cargarMatriz("Mapa2");
     ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
@@ -150,26 +149,31 @@ void Juego::graficar()
 
         if (btnN1->procesarBoton(&*ventana)) { // Botones
             cout << "n1" << endl;
+            mat->cargarMatriz("Mapa1");
             btnN1->setEstadoBoton(BTN_INACTIVO);
         }
 
         if (btnN2->procesarBoton(&*ventana)) { // Botones
             cout << "n2" << endl;
+            mat->cargarMatriz("Mapa2");
             btnN2->setEstadoBoton(BTN_INACTIVO);
         }
 
         if (btnN3->procesarBoton(&*ventana)) { // Botones
             cout << "n3" << endl;
+            mat->cargarMatriz("Mapa3");
             btnN3->setEstadoBoton(BTN_INACTIVO);
         }
 
         if (btnN4->procesarBoton(&*ventana)) { // Botones
             cout << "n4" << endl;
+            mat->cargarMatriz("Mapa4");
             btnN4->setEstadoBoton(BTN_INACTIVO);
         }
 
         if (btnN5->procesarBoton(&*ventana)) { // Botones
             cout << "n5" << endl;
+            mat->cargarMatriz("Mapa5");
             btnN5->setEstadoBoton(BTN_INACTIVO);
         }
 
@@ -198,32 +202,25 @@ void Juego::graficar()
         descripcion.setString("Seleccione uno de los niveles, Para Visualizar su Solucion");
         ventana->draw(descripcion);
     }
-    
+
     procesarMapa();
-
-}
-void Juego::graficarMapa(string dato) {
-    Texture texture;
-    Sprite sprite;
-
-    if (dato == "#") {
-        
-        texture.loadFromFile("ladrillo.png");
-        sprite.setTexture(texture);
-        sprite.setPosition(posicion);       
-    }
-    ventana->draw(sprite);
-    
 }
 
 void Juego::procesarMapa() {  
     Nodo* aux = NULL, * aux2 = NULL;
     aux = mat->getIni();
-
+    Texture imgn;
+    Sprite sprt;
+    
     while (aux != NULL) {
         aux2 = aux;
         while (aux2 != NULL) {
-            graficarMapa(aux2->getDato());
+            if (aux2->getDato() == "#") {
+                imgn.loadFromFile("ladrillo.png");
+                sprt.setTexture(imgn);
+                sprt.setPosition(posicion);
+                ventana->draw(sprt);
+            }
             posicion.x += 50;
             aux2 = aux2->getSig();
         }

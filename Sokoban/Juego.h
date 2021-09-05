@@ -18,6 +18,7 @@ private:
 	Font* font;
 	Text titulo;
 	Vector2f posicion;
+	String nivel;
 	Boton* btnNuevoJuego;
 	Boton* btnCargarJuego;
 	Boton* btnSolucionNivel;
