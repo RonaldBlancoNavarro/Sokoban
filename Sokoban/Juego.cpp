@@ -3,7 +3,9 @@
 using namespace sf;
 
 Juego::Juego() {
-
+    mat = new Matriz();
+    mat->cargarMatriz("Mapa1");
+    posicion = { 0,0 };
     ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
@@ -60,7 +62,7 @@ void Juego::procesarEventos()
         }
 
         // get mouse position
-        Vector2f posMouse = sf::Vector2f(sf::Mouse::getPosition(*ventana));
+        Vector2f posMouse = Vector2f(Mouse::getPosition(*ventana));
 
         btnNuevoJuego->actualizarBoton(posMouse);
         btnCargarJuego->actualizarBoton(posMouse);
@@ -72,7 +74,6 @@ void Juego::procesarEventos()
 void Juego::graficar()
 {
     // lo mas seguro aqui hay que llamar al metodo que crea el menu
-
     ventana->draw(*sprite); //imagen
 
     ventana->draw(titulo);
@@ -89,7 +90,39 @@ void Juego::graficar()
 
     if (btnSalir->procesarBoton(&*ventana)) {
         cout << "Salir Juego" << endl;
+        ventana->close();
         btnSalir->setEstadoBoton(BTN_INACTIVO);
     }
+    
+    procesarMapa();
 
+}
+void Juego::graficarMapa(string dato) {
+    Texture texture;
+    Sprite sprite;
+
+    if (dato == "#") {
+        
+        texture.loadFromFile("ladrillo.png");
+        sprite.setTexture(texture);
+        sprite.setPosition(posicion);       
+    }
+    ventana->draw(sprite);
+    
+}
+Nodo* aux = NULL, * aux2 = NULL;
+
+void Juego::procesarMapa() {  
+    aux = mat->getIni();
+
+    while (aux != NULL) {
+        aux2 = aux;
+        while (aux2 != NULL) {
+            graficarMapa(aux2->getDato());
+            posicion.x += 50;
+            aux2 = aux2->getSig();
+        }
+        posicion.y += 50;
+        aux = aux->getAbajo();
+    }
 }
