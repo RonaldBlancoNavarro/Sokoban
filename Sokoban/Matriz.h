@@ -14,15 +14,14 @@ public:
 	Matriz();
 	void setIni(Nodo*);
 	void setFin(Nodo*);
-	//void setIniAr(Nodo*);
 	void setFinAb(Nodo*);
 	void setMapa(string);
 	Nodo* getIni();
 	Nodo* getFin();
-	//Nodo* getIniAr();
 	Nodo* getFinAb();
 	string getMapa();
 	void cargarMatriz(string);
+	void limpiarMatriz();
 	void mostrar();
 };
 #endif

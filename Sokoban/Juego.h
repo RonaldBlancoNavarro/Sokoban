@@ -3,12 +3,11 @@
 #include "Matriz.h"
 #include "Boton.h"
 #include <iostream>
-#include <list>
 using namespace sf;// este es para usar el SFML
 using namespace std;
 
-enum estados_submenu { SBMN_INACTIVO = 0, SBMN_NUEVOJUEGO, SBMN_CARGARJUEGO, SBMN_SOLUCIONNIVEL };
-
+enum estados_submenu { SBMN_INACTIVO = 0, SBMN_SUBMENU, SBMN_NUEVOJUEGO, SBMN_CARGARJUEGO, SBMN_SOLUCIONNIVEL, SBMN_PARTIDA};
+enum mapa_seleccionado {MAPA1 = 10 , MAPA2 = 9, MAPA3 = 13, MAPA4 = 11, MAPA5 = 9};
 class Juego {
 private:
 	Matriz *mat;
@@ -25,7 +24,7 @@ private:
 	Boton* btnSalir;
 
 	short unsigned estadoSubmenu; // unsigned es para no aceptar negativos
-
+	short unsigned mapa;
 	Text descripcion;
 	Boton* btnSiguiente;
 	Boton* btnAtras;
@@ -43,6 +42,6 @@ public:
 	void dibujarVentana();
 	void procesarEventos();
 	void procesarMapa();
-	void graficarMapa(string);
+	void graficarDato(string);
 	void graficar();
 };

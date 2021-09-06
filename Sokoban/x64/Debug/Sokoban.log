@@ -1,2 +1,3 @@
 ﻿  Juego.cpp
+C:\Users\keine\Documents\GitHub\Sokoban\Sokoban\Juego.cpp(261,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
   Sokoban.vcxproj -> C:\Users\keine\Documents\GitHub\Sokoban\Sokoban\x64\Debug\Sokoban.exe

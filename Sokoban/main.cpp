@@ -5,7 +5,7 @@
 int main()
 {
     Matriz mat;
-    mat.cargarMatriz("Mapa3");
+    mat.cargarMatriz("Mapa2");
     mat.mostrar();
     Juego *game = new Juego();
     game->mostrarVentana();

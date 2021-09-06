@@ -182,7 +182,9 @@ void Matriz::cargarMatriz(string mapa) {
 		file.close();
 	}
 }
-
+void Matriz::limpiarMatriz() {
+	ini = NULL;
+}
 void Matriz::mostrar() {
 	if (ini != NULL) {
 		Nodo *aux = ini,*aux2;

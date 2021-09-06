@@ -4,7 +4,7 @@ using namespace sf;
 
 Juego::Juego() {
     mat = new Matriz();
-    mat->cargarMatriz("Mapa2");
+    posicion = { 0,0 };
     ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
@@ -94,7 +94,6 @@ void Juego::procesarEventos()
             btnSalir->actualizarBoton(posMouse);
         }
 
-
         if (estadoSubmenu != SBMN_INACTIVO) {
 
             btnN1->actualizarBoton(posMouse);
@@ -122,7 +121,7 @@ void Juego::graficar()
         if (btnNuevoJuego->procesarBoton(&*ventana)) { // Botones
             cout << "Nuevo Juego" << endl;
             btnNuevoJuego->setEstadoBoton(BTN_INACTIVO);
-            estadoSubmenu = SBMN_NUEVOJUEGO;
+            estadoSubmenu = SBMN_SUBMENU;
         }
 
         if (btnCargarJuego->procesarBoton(&*ventana)) {
@@ -145,41 +144,56 @@ void Juego::graficar()
 
     }
 
-    if (estadoSubmenu != SBMN_INACTIVO) {
-
+    if (estadoSubmenu == SBMN_SUBMENU) {
+        descripcion.setString("Seleccione uno de los niveles, Para iniciar un Nuevo Juego");
+        ventana->draw(descripcion);
         if (btnN1->procesarBoton(&*ventana)) { // Botones
             cout << "n1" << endl;
+            mapa = MAPA1;
+            mat->limpiarMatriz();
             mat->cargarMatriz("Mapa1");
             btnN1->setEstadoBoton(BTN_INACTIVO);
+            
         }
 
         if (btnN2->procesarBoton(&*ventana)) { // Botones
             cout << "n2" << endl;
+            mapa = MAPA2;
+            mat->limpiarMatriz();
             mat->cargarMatriz("Mapa2");
             btnN2->setEstadoBoton(BTN_INACTIVO);
+            
         }
 
         if (btnN3->procesarBoton(&*ventana)) { // Botones
             cout << "n3" << endl;
+            mapa = MAPA3;
+            mat->limpiarMatriz();
             mat->cargarMatriz("Mapa3");
             btnN3->setEstadoBoton(BTN_INACTIVO);
+            
         }
 
         if (btnN4->procesarBoton(&*ventana)) { // Botones
-            cout << "n4" << endl;
+            cout << "n4" << endl; 
+            mapa = MAPA4;
+            mat->limpiarMatriz();
             mat->cargarMatriz("Mapa4");
-            btnN4->setEstadoBoton(BTN_INACTIVO);
+            btnN4->setEstadoBoton(BTN_INACTIVO);           
         }
 
         if (btnN5->procesarBoton(&*ventana)) { // Botones
             cout << "n5" << endl;
+            mapa = MAPA5;
+            mat->limpiarMatriz();
             mat->cargarMatriz("Mapa5");
             btnN5->setEstadoBoton(BTN_INACTIVO);
         }
 
         if (btnSiguiente->procesarBoton(&*ventana)) { // Botones
-            cout << "Siguiente" << endl;
+            cout << "Siguiente" << endl;           
             btnSiguiente->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_PARTIDA;
         }
 
         if (btnAtras->procesarBoton(&*ventana)) {
@@ -202,28 +216,58 @@ void Juego::graficar()
         descripcion.setString("Seleccione uno de los niveles, Para Visualizar su Solucion");
         ventana->draw(descripcion);
     }
-
-    procesarMapa();
+    if (estadoSubmenu == SBMN_PARTIDA) {
+        procesarMapa();
+        if (btnAtras->procesarBoton(&*ventana)) {
+            cout << "Atras" << endl;
+            btnAtras->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SUBMENU;
+        }
+    }
+    //procesarMapa();
 }
+void Juego::graficarDato(string dato) {
+    Texture* texture;
+    Sprite* sprite;
+    if (dato == "#") {
+        texture = new Texture();
+        sprite = new Sprite();
+        texture->loadFromFile("ladrillo.png");
+        sprite->setTexture(*texture);
+        sprite->setPosition(posicion);
+        ventana->draw(*sprite);
+    }
+    else if (dato == "$") {
+        texture = new Texture();
+        sprite = new Sprite();
+        texture->loadFromFile("caja1.png");
+        sprite->setTexture(*texture);
+        sprite->setPosition(posicion);
+        ventana->draw(*sprite);
+    }
+    else if(dato == "@") {
+        texture = new Texture();
+        sprite = new Sprite();
+        texture->loadFromFile("personaje.png");
+        sprite->setTexture(*texture);
+        sprite->setPosition(posicion);
+        ventana->draw(*sprite);
+    }
 
+}
 void Juego::procesarMapa() {  
     Nodo* aux = NULL, * aux2 = NULL;
     aux = mat->getIni();
-    Texture imgn;
-    Sprite sprt;
-    
+    float ancho = mapa * 50;
+    posicion = { (float)(ventana->getSize().x/2) - ancho/2 , 50 };
     while (aux != NULL) {
         aux2 = aux;
         while (aux2 != NULL) {
-            if (aux2->getDato() == "#") {
-                imgn.loadFromFile("ladrillo.png");
-                sprt.setTexture(imgn);
-                sprt.setPosition(posicion);
-                ventana->draw(sprt);
-            }
+            graficarDato(aux2->getDato());
             posicion.x += 50;
             aux2 = aux2->getSig();
         }
+        posicion.x = (float)(ventana->getSize().x / 2) - ancho / 2;
         posicion.y += 50;
         aux = aux->getAbajo();
     }
