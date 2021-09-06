@@ -45,4 +45,5 @@ public:
 	void procesarMapa();
 	void graficarDato(string);
 	void graficar();
+	void movientoPersonaje(Event event);
 };

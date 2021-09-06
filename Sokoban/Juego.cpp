@@ -83,6 +83,10 @@ void Juego::procesarEventos()
             ventana->close();
         }
 
+        //if (event.type == sf::Event::KeyPressed) {
+        //    movientoPersonaje(event);
+        //}
+
         // get mouse position
         Vector2f posMouse = Vector2f(Mouse::getPosition(*ventana));
 
@@ -273,5 +277,21 @@ void Juego::procesarMapa() {
         posicion.x = (float)(ventana->getSize().x / 2) - ancho / 2;
         posicion.y += 50;
         aux = aux->getAbajo();
+    }
+}
+
+void Juego::movientoPersonaje(Event event)
+{
+    if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+        mat->verificarMovimiento('W');
+    }
+    if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+        mat->verificarMovimiento('S');
+    }
+    if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+        mat->verificarMovimiento('A');
+    }
+    if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+        mat->verificarMovimiento('D');
     }
 }
