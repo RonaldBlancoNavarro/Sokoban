@@ -33,6 +33,8 @@ public:
 	void actualizarBoton(Vector2f posMouse);
 	bool procesarBoton(RenderWindow* ventana);
 	void setEstadoBoton(short unsigned estadoBoton);
+	void setPosicion(Vector2f);
+	void setBounds(Vector2f);
 };
 
 #endif

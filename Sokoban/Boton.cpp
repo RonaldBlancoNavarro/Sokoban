@@ -86,3 +86,13 @@ void Boton::setEstadoBoton(short unsigned estadoBoton)
 {
 	this->estadoBoton = estadoBoton;
 }
+void Boton::setBounds(Vector2f b) {
+	this->figura.setSize(b);
+}
+
+void Boton::setPosicion(Vector2f p) {
+	this->figura.setPosition(p);
+	this->texto.setPosition(
+		this->figura.getPosition().x + (this->figura.getGlobalBounds().width / 2.f) - this->texto.getGlobalBounds().width / 2.f,
+		this->figura.getPosition().y + (this->figura.getGlobalBounds().height / 2.f) - this->texto.getGlobalBounds().height / 2.f);
+}

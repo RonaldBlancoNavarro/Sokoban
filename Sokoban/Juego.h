@@ -16,6 +16,7 @@ private:
 	Sprite* sprite;
 	Font* font;
 	Text titulo;
+	float centro;
 	Vector2f posicion;
 	String nivel;
 	Boton* btnNuevoJuego;

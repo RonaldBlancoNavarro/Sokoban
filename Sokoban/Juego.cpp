@@ -3,14 +3,14 @@
 using namespace sf;
 
 Juego::Juego() {
-    mat = new Matriz();
+    mat = new Matriz();   
     posicion = { 0,0 };
-    ventana = new RenderWindow(VideoMode(800, 600), "SOKOBAN");
+    ventana = new RenderWindow(VideoMode(900, 700), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
     imagen->loadFromFile("caja.png", sf::IntRect(0, 0, 800, 600));
     sprite->setTexture(*imagen);
-    sprite->setScale(800.f / sprite->getTexture()->getSize().x, 600.f / sprite->getTexture()->getSize().y); // tama�o deseado dividido tama�o actual
+    sprite->setScale((float)ventana->getSize().x / sprite->getTexture()->getSize().x, (float)ventana->getSize().y / sprite->getTexture()->getSize().y); // tama�o deseado dividido tama�o actual
 
     Image img;
     img.loadFromFile("caja.png");
@@ -18,18 +18,18 @@ Juego::Juego() {
 
     font = new Font();
     font->loadFromFile("HU The Game.ttf");
-
+    centro = ventana->getSize().x / 2;
     titulo.setFont(*font);
     titulo.setString("-SOKOBAN-");
     titulo.setCharacterSize(50);
     titulo.setFillColor(Color::White);
-    titulo.setPosition(400 - titulo.getGlobalBounds().width / 2.f, 50);
+    titulo.setPosition(centro - titulo.getGlobalBounds().width / 2.f, 50);
 
 
-    btnNuevoJuego = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 140, 170, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
-    btnCargarJuego = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 260, 170, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
-    btnSolucionNivel = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 380, 170, 80, &*font, "Solucion Nivel", 25, Color::Cyan, Color::Green, Color::Black);
-    btnSalir = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 500, 170, 80, &*font, "Salir", 25, Color::Red, Color::Green, Color::Black);
+    btnNuevoJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 140, 170, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
+    btnCargarJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 260, 170, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
+    btnSolucionNivel = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 380, 170, 80, &*font, "Solucion Nivel", 25, Color::Cyan, Color::Green, Color::Black);
+    btnSalir = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 500, 170, 80, &*font, "Salir", 25, Color::Red, Color::Green, Color::Black);
 
     this->estadoSubmenu = SBMN_INACTIVO;
 
@@ -37,18 +37,18 @@ Juego::Juego() {
     descripcion.setString("Selecione uno de los siguientes niveles");
     descripcion.setCharacterSize(20);
     descripcion.setFillColor(Color::White);
-    descripcion.setPosition(400 - titulo.getGlobalBounds().width, 80);
+    descripcion.setPosition(centro - titulo.getGlobalBounds().width, 80);
 
 
-    btnN1 = new Boton(140, 180, 80, 80, &*font, "n1", 25, Color::Blue, Color::Green, Color::Red);
-    btnN2 = new Boton(240, 180, 80, 80, &*font, "n2", 25, Color::Blue, Color::Green, Color::Red);
-    btnN3 = new Boton(340, 180, 80, 80, &*font, "n3", 25, Color::Blue, Color::Green, Color::Red);
-    btnN4 = new Boton(440, 180, 80, 80, &*font, "n4", 25, Color::Blue, Color::Green, Color::Red);
-    btnN5 = new Boton(540, 180, 80, 80, &*font, "n5", 25, Color::Blue, Color::Green, Color::Red);
+    btnN1 = new Boton(200, 180, 80, 80, &*font, "n1", 25, Color::Blue, Color::Green, Color::Red);
+    btnN2 = new Boton(300, 180, 80, 80, &*font, "n2", 25, Color::Blue, Color::Green, Color::Red);
+    btnN3 = new Boton(400, 180, 80, 80, &*font, "n3", 25, Color::Blue, Color::Green, Color::Red);
+    btnN4 = new Boton(500, 180, 80, 80, &*font, "n4", 25, Color::Blue, Color::Green, Color::Red);
+    btnN5 = new Boton(600, 180, 80, 80, &*font, "n5", 25, Color::Blue, Color::Green, Color::Red);
 
 
-    btnSiguiente = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 300, 150, 80, &*font, "Siguiente", 25, Color::Yellow, Color::Green, Color::Red);
-    btnAtras = new Boton(400 - titulo.getGlobalBounds().width / 3.f, 420, 150, 80, &*font, "Atras", 25, Color::Red, Color::Green, Color::Black);
+    btnSiguiente = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 300, 150, 80, &*font, "Siguiente", 25, Color::Yellow, Color::Green, Color::Red);
+    btnAtras = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 420, 150, 80, &*font, "Atras", 25, Color::Red, Color::Green, Color::Black);
 }
 
 void Juego::mostrarVentana() // Loop principal
@@ -195,7 +195,8 @@ void Juego::graficar()
             btnSiguiente->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_PARTIDA;
         }
-
+        btnAtras->setBounds(Vector2f(150, 80));
+        btnAtras->setPosicion(Vector2f(centro - titulo.getGlobalBounds().width / 3.f, 420));
         if (btnAtras->procesarBoton(&*ventana)) {
             cout << "Atras" << endl;
             btnAtras->setEstadoBoton(BTN_INACTIVO);
@@ -218,6 +219,8 @@ void Juego::graficar()
     }
     if (estadoSubmenu == SBMN_PARTIDA) {
         procesarMapa();
+        btnAtras->setBounds(Vector2f(120, 60));
+        btnAtras->setPosicion(Vector2f((float)40, (float)615));
         if (btnAtras->procesarBoton(&*ventana)) {
             cout << "Atras" << endl;
             btnAtras->setEstadoBoton(BTN_INACTIVO);
