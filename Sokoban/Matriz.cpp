@@ -200,3 +200,82 @@ void Matriz::mostrar() {
 		}
 	}
 }
+
+void Matriz::verificarMovimiento(char movimiento)
+{ // metodo que decide aplicar el movimiento de caracteres en la matriz
+//y aplicar dicho movimiento en caso de ser necesario
+	Nodo* aux = NULL, * aux2 = NULL;
+	aux = ini;
+
+	while (aux != NULL) {
+		aux2 = aux;
+		while (aux2 != NULL) {
+			if (aux2->getDato() == "@") {
+				bool mover = false;
+
+				switch (movimiento)
+				{
+				case 'W': {
+					if (aux2->getArriba() != NULL) {
+
+						if (aux2->getArriba()->getDato() == "@" || aux2->getArriba()->getDato() == "#" || aux2->getArriba()->getDato() == "!") {
+							// si es un jugador,pared,Caja ubicada en el espacio donde corresponde
+							mover = false;
+						}
+						else {
+							if (aux2->getArriba()->getDato() == " " || aux2->getArriba()->getDato() == ".") {
+								//si es espacio en blanco, espacio para colocar una caja
+								mover = true;
+							}
+							else {
+								if (aux2->getArriba()->getDato() == "$") {
+									//si es una caja
+									if (aux2->getArriba()->getArriba() != NULL) {
+
+										if (aux2->getArriba()->getArriba()->getDato() == " " || aux2->getArriba()->getArriba()->getDato() == ".") {
+											//si es espacio en blanco, espacio para colocar una caja
+											mover = true;
+										}
+										else {
+											mover = false;
+										}
+
+									}
+									else { mover = false; }
+								}
+							}
+						}
+
+						
+						// seccion para aplicar cambios
+						if (mover) {
+							// aqui se complica la situacion pues mover el 
+							// personaje y en caso de ser necesario la caja,
+							// tambien hay que considerar que estos podian tapar:
+							//espacio en blanco , espacio para colocar una caja
+							// y estos deben de volver a como estaban en caso de ser necesario
+						}
+					}
+					break;
+				}
+				case 'S': {
+					break;
+				}
+				case 'A': {
+					break;
+				}
+				case 'D': {
+					break;
+				}
+				default:
+					break;
+				}
+			}
+
+			aux2 = aux2->getSig();
+		}
+		aux = aux->getAbajo();
+	}
+
+}
+
