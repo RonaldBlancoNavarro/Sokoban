@@ -20,6 +20,7 @@ public:
 	Nodo* getArriba();
 	Nodo* getAbajo();
 	string getDato();
+	void setDato(string);
 };
 
 #endif

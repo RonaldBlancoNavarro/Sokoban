@@ -32,6 +32,7 @@ Juego::Juego() {
     btnSalir = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 500, 170, 80, &*font, "Salir", 25, Color::Red, Color::Green, Color::Black);
 
     this->estadoSubmenu = SBMN_INACTIVO;
+    this->mapa = MAPA1;
 
     descripcion.setFont(*font);
     descripcion.setString("Selecione uno de los siguientes niveles");
@@ -83,9 +84,9 @@ void Juego::procesarEventos()
             ventana->close();
         }
 
-        //if (event.type == sf::Event::KeyPressed) {
-        //    movientoPersonaje(event);
-        //}
+        if (event.type == sf::Event::KeyPressed) {
+            movientoPersonaje(event);
+        }
 
         // get mouse position
         Vector2f posMouse = Vector2f(Mouse::getPosition(*ventana));
@@ -123,90 +124,77 @@ void Juego::graficar()
         ventana->draw(titulo);
 
         if (btnNuevoJuego->procesarBoton(&*ventana)) { // Botones
-            cout << "Nuevo Juego" << endl;
             btnNuevoJuego->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_SUBMENU;
         }
 
         if (btnCargarJuego->procesarBoton(&*ventana)) {
-            cout << "Cargar Juego" << endl;
             btnCargarJuego->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_CARGARJUEGO;
         }
 
         if (btnSolucionNivel->procesarBoton(&*ventana)) {
-            cout << "Solucion Nivel" << endl;
             btnSolucionNivel->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_SOLUCIONNIVEL;
         }
 
         if (btnSalir->procesarBoton(&*ventana)) {
-            cout << "Salir Juego" << endl;
             btnSalir->setEstadoBoton(BTN_INACTIVO);
             ventana->close();
         }
-
     }
 
     if (estadoSubmenu == SBMN_SUBMENU) {
         descripcion.setString("Seleccione uno de los niveles, Para iniciar un Nuevo Juego");
         ventana->draw(descripcion);
-        if (btnN1->procesarBoton(&*ventana)) { // Botones
-            cout << "n1" << endl;
+        if (btnN1->procesarBoton(&*ventana)) { 
             mapa = MAPA1;
             mat->limpiarMatriz();
             mat->cargarMatriz("Mapa1");
             btnN1->setEstadoBoton(BTN_INACTIVO);
-            
         }
 
-        if (btnN2->procesarBoton(&*ventana)) { // Botones
-            cout << "n2" << endl;
+        if (btnN2->procesarBoton(&*ventana)) { 
             mapa = MAPA2;
             mat->limpiarMatriz();
             mat->cargarMatriz("Mapa2");
             btnN2->setEstadoBoton(BTN_INACTIVO);
-            
         }
 
-        if (btnN3->procesarBoton(&*ventana)) { // Botones
-            cout << "n3" << endl;
+        if (btnN3->procesarBoton(&*ventana)) { 
             mapa = MAPA3;
             mat->limpiarMatriz();
             mat->cargarMatriz("Mapa3");
             btnN3->setEstadoBoton(BTN_INACTIVO);
-            
         }
 
-        if (btnN4->procesarBoton(&*ventana)) { // Botones
-            cout << "n4" << endl; 
+        if (btnN4->procesarBoton(&*ventana)) { 
             mapa = MAPA4;
             mat->limpiarMatriz();
             mat->cargarMatriz("Mapa4");
             btnN4->setEstadoBoton(BTN_INACTIVO);           
         }
 
-        if (btnN5->procesarBoton(&*ventana)) { // Botones
-            cout << "n5" << endl;
+        if (btnN5->procesarBoton(&*ventana)) { 
             mapa = MAPA5;
             mat->limpiarMatriz();
             mat->cargarMatriz("Mapa5");
             btnN5->setEstadoBoton(BTN_INACTIVO);
         }
 
-        if (btnSiguiente->procesarBoton(&*ventana)) { // Botones
-            cout << "Siguiente" << endl;           
+        if (btnSiguiente->procesarBoton(&*ventana)) {          
             btnSiguiente->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_PARTIDA;
         }
+
         btnAtras->setBounds(Vector2f(150, 80));
         btnAtras->setPosicion(Vector2f(centro - titulo.getGlobalBounds().width / 3.f, 420));
+        
         if (btnAtras->procesarBoton(&*ventana)) {
-            cout << "Atras" << endl;
+            //cout << "Atras" << endl;
             btnAtras->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_INACTIVO;
         }
-
     }
 
     if (estadoSubmenu == SBMN_NUEVOJUEGO) {
@@ -231,8 +219,8 @@ void Juego::graficar()
             estadoSubmenu = SBMN_SUBMENU;
         }
     }
-    //procesarMapa();
 }
+
 void Juego::graficarDato(string dato) {
     Texture* texture;
     Sprite* sprite;
@@ -252,7 +240,7 @@ void Juego::graficarDato(string dato) {
         sprite->setPosition(posicion);
         ventana->draw(*sprite);
     }
-    else if(dato == "@") {
+    else if(dato == "@" || dato == "a") {
         texture = new Texture();
         sprite = new Sprite();
         texture->loadFromFile("personaje.png");
@@ -260,8 +248,24 @@ void Juego::graficarDato(string dato) {
         sprite->setPosition(posicion);
         ventana->draw(*sprite);
     }
-
+    else if (dato == "!") {
+        texture = new Texture();
+        sprite = new Sprite();
+        texture->loadFromFile("caja1.png");
+        sprite->setTexture(*texture);
+        sprite->setPosition(posicion);
+        sprite->setColor(Color::Cyan);
+        ventana->draw(*sprite);
+    }
+    else if (dato == ".") {
+     sf::CircleShape shape(10.f);
+        shape.setPosition(posicion.x+15,posicion.y+15);
+        // set the shape color to green
+        shape.setFillColor(sf::Color::Red);
+        ventana->draw(shape);
+    }
 }
+
 void Juego::procesarMapa() {  
     Nodo* aux = NULL, * aux2 = NULL;
     aux = mat->getIni();
@@ -294,4 +298,7 @@ void Juego::movientoPersonaje(Event event)
     if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
         mat->verificarMovimiento('D');
     }
+
+ /*   cout << endl;
+    mat->mostrar();*/
 }

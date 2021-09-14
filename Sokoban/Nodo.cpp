@@ -1,12 +1,15 @@
 #include "Nodo.h"
 
-Nodo::Nodo(string dato) :
-	dato(dato)
+Nodo::Nodo(string dato) //:dato(dato)
 {
+	this->dato = dato;
+	abajo = arriba = ant = sig = NULL;
 }
 
 Nodo::Nodo()
 {
+	dato = " ";
+	abajo = arriba = ant = sig = NULL;
 }
 
 Nodo::~Nodo()
@@ -41,4 +44,9 @@ Nodo* Nodo::getAbajo() {
 
 string Nodo::getDato() {
 	return dato;
+}
+
+void Nodo::setDato(string dato)
+{
+	this->dato = dato;
 }

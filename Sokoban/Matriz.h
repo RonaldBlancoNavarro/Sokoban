@@ -23,6 +23,6 @@ public:
 	void cargarMatriz(string);
 	void limpiarMatriz();
 	void mostrar();
-	void verificarMovimiento(char movimiento);
+	bool verificarMovimiento(char movimiento);
 };
 #endif

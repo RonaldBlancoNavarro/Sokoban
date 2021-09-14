@@ -54,6 +54,8 @@ void Matriz::cargarMatriz(string mapa) {
 	}
 	else {
 		Nodo* nodo, *aux = NULL;
+		nodo = new Nodo();
+		aux = new Nodo();
 		
 		caracter = file.get();
 		caracter = file.get();
@@ -126,62 +128,11 @@ void Matriz::cargarMatriz(string mapa) {
 					}					
 				}
 			}
-				// comprobacion si el caracter es  diferente de un salto de linea
-			/*	if (nodo->getDato()[0] != 10)
-				{
-
-					//Colocacion del siguiente nodo despues de fin : conexion horizontal
-					fin->setSig(nodo);
-					nodo->setAnt(fin);
-					nodo->setSig(NULL);
-					nodo->setAbajo(NULL);
-
-
-					if (fin->getArriba() == NULL || fin->getArriba()->getSig() == NULL) {
-						// si no hay nodo arriba en fin ->NULL
-						// si en fin->arriba->sig es NULL-> NULL
-						nodo->setArriba(NULL);
-					}
-					else {
-						// realizamos conexion vertical
-						nodo->setArriba(fin->getArriba()->getSig());
-						fin->getArriba()->getSig()->setAbajo(nodo);
-					}
-
-					fin = nodo;// avanza fin a la siguiente posicion
-				}
-				else // si el caracter es un salto de linea -revisar- puede ser que este insertando el salto de linea al inicio de una nueva fila
-				{
-					aux = ini;
-					// recorrer la lista para abajo en la primer columna con aux
-					while (aux != NULL) {
-						// si el siguiente  no es nulo se avanza
-						if (aux->getAbajo() != NULL) {
-							aux = aux->getAbajo();
-						}
-						else {
-							// si el siguiente es nulo se detiene el avanze
-							// encontrando el nodo sobre el que se va a insertar debajo el nuevo nodo
-							break;
-						}
-					}
-
-					//insertar el nuevo nodo haciendo las conexiones
-
-					nodo->setAnt(NULL);// conexioneshorizontales
-					nodo->setSig(NULL);
-					aux->setAbajo(nodo);// conexiones verticales
-					nodo->setArriba(aux);
-					nodo->setAbajo(NULL);
-
-					fin = nodo;// avanza fin a la siguiente posicion que seria el inicio de una nueva fila
-				}
-
-			}*/
 		}
 		file.close();
 	}
 }
+
 void Matriz::limpiarMatriz() {
 	ini = NULL;
 }
@@ -201,7 +152,7 @@ void Matriz::mostrar() {
 	}
 }
 
-void Matriz::verificarMovimiento(char movimiento)
+bool Matriz::verificarMovimiento(char movimiento)
 { // metodo que decide aplicar el movimiento de caracteres en la matriz
 //y aplicar dicho movimiento en caso de ser necesario
 	Nodo* aux = NULL, * aux2 = NULL;
@@ -210,16 +161,15 @@ void Matriz::verificarMovimiento(char movimiento)
 	while (aux != NULL) {
 		aux2 = aux;
 		while (aux2 != NULL) {
-			if (aux2->getDato() == "@") {
+			if (aux2->getDato() == "@" || aux2->getDato() == "a") {
 				bool mover = false;
 
 				switch (movimiento)
 				{
 				case 'W': {
-					if (aux2->getArriba() != NULL) {
 
-						if (aux2->getArriba()->getDato() == "@" || aux2->getArriba()->getDato() == "#" || aux2->getArriba()->getDato() == "!") {
-							// si es un jugador,pared,Caja ubicada en el espacio donde corresponde
+						if (aux2->getArriba()->getDato() == "@" || aux2->getArriba()->getDato() == "a" || aux2->getArriba()->getDato() == "#" ) {
+							// si es un jugador,pared
 							mover = false;
 						}
 						else {
@@ -228,8 +178,8 @@ void Matriz::verificarMovimiento(char movimiento)
 								mover = true;
 							}
 							else {
-								if (aux2->getArriba()->getDato() == "$") {
-									//si es una caja
+								if (aux2->getArriba()->getDato() == "$" || aux2->getArriba()->getDato() == "!") {
+									//si es una caja,Caja ubicada en el espacio donde corresponde
 									if (aux2->getArriba()->getArriba() != NULL) {
 
 										if (aux2->getArriba()->getArriba()->getDato() == " " || aux2->getArriba()->getArriba()->getDato() == ".") {
@@ -246,28 +196,290 @@ void Matriz::verificarMovimiento(char movimiento)
 							}
 						}
 
-						
+
 						// seccion para aplicar cambios
 						if (mover) {
-							// aqui se complica la situacion pues mover el 
-							// personaje y en caso de ser necesario la caja,
-							// tambien hay que considerar que estos podian tapar:
-							//espacio en blanco , espacio para colocar una caja
-							// y estos deben de volver a como estaban en caso de ser necesario
+
+							if (aux2->getArriba()->getDato() != "$" && aux2->getArriba()->getDato() != "!") { // si arriba diferente de caja
+
+
+								if (aux2->getArriba()->getDato() == " ") {// si arriba igual a espacio en blanco
+									aux2->getArriba()->setDato("@");
+								}
+								else {
+									//si habia espacio para colocar caja
+									aux2->getArriba()->setDato("a");
+								}
+
+							}
+							else {
+								if (aux2->getArriba()->getArriba()->getDato() == ".") {
+									// si arriba de la caja  habia espacio para colocar caja
+									aux2->getArriba()->getArriba()->setDato("!");
+								}
+								else{
+									aux2->getArriba()->getArriba()->setDato("$");
+								}
+
+								if (aux2->getArriba()->getDato() == "$") {
+									// si donde la caja estaba NO existia punto para colocar una caja
+									aux2->getArriba()->setDato("@");
+								}
+								else { // si la caja estaba ubicada en el espacio donde corresponde
+									aux2->getArriba()->setDato("a");
+								}
+
+							}
+
+							// terminar de mover al personaje de la posicion donde estaba
+							if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
+								aux2->setDato(" ");
+							}
+							else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
+								aux2->setDato(".");
+							}
+
+							return true;
 						}
-					}
+							return false;
 					break;
 				}
 				case 'S': {
+
+					if (aux2->getAbajo()->getDato() == "@" || aux2->getAbajo()->getDato() == "a" || aux2->getAbajo()->getDato() == "#") {
+						// si es un jugador,pared
+						mover = false;
+					}
+					else {
+						if (aux2->getAbajo()->getDato() == " " || aux2->getAbajo()->getDato() == ".") {
+							//si es espacio en blanco, espacio para colocar una caja
+							mover = true;
+						}
+						else {
+							if (aux2->getAbajo()->getDato() == "$" || aux2->getAbajo()->getDato() == "!") {
+								//si es una caja,Caja ubicada en el espacio donde corresponde
+								if (aux2->getAbajo()->getAbajo() != NULL) {
+
+									if (aux2->getAbajo()->getAbajo()->getDato() == " " || aux2->getAbajo()->getAbajo()->getDato() == ".") {
+										//si es espacio en blanco, espacio para colocar una caja
+										mover = true;
+									}
+									else {
+										mover = false;
+									}
+
+								}
+								else { mover = false; }
+							}
+						}
+					}
+
+
+					// seccion para aplicar cambios
+					if (mover) {
+
+						if (aux2->getAbajo()->getDato() != "$" && aux2->getAbajo()->getDato() != "!") { // si Abajo diferente de caja
+
+
+							if (aux2->getAbajo()->getDato() == " ") {// si Abajo igual a espacio en blanco
+								aux2->getAbajo()->setDato("@");
+							}
+							else {
+								//si habia espacio para colocar caja
+								aux2->getAbajo()->setDato("a");
+							}
+
+						}
+						else {
+							if (aux2->getAbajo()->getAbajo()->getDato() == ".") {
+								// si Abajo de la caja  habia espacio para colocar caja
+								aux2->getAbajo()->getAbajo()->setDato("!");
+							}
+							else {
+								aux2->getAbajo()->getAbajo()->setDato("$");
+							}
+
+							if (aux2->getAbajo()->getDato() == "$") {
+								// si donde la caja estaba NO existia punto para colocar una caja
+								aux2->getAbajo()->setDato("@");
+							}
+							else { // si la caja estaba ubicada en el espacio donde corresponde
+								aux2->getAbajo()->setDato("a");
+							}
+
+						}
+
+						// terminar de mover al personaje de la posicion donde estaba
+						if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
+							aux2->setDato(" ");
+						}
+						else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
+							aux2->setDato(".");
+						}
+
+						return true;
+					}
+					return false;
 					break;
 				}
 				case 'A': {
+
+					if (aux2->getAnt()->getDato() == "@" || aux2->getAnt()->getDato() == "a" || aux2->getAnt()->getDato() == "#") {
+						// si es un jugador,pared
+						mover = false;
+					}
+					else {
+						if (aux2->getAnt()->getDato() == " " || aux2->getAnt()->getDato() == ".") {
+							//si es espacio en blanco, espacio para colocar una caja
+							mover = true;
+						}
+						else {
+							if (aux2->getAnt()->getDato() == "$" || aux2->getAnt()->getDato() == "!") {
+								//si es una caja,Caja ubicada en el espacio donde corresponde
+								if (aux2->getAnt()->getAnt() != NULL) {
+
+									if (aux2->getAnt()->getAnt()->getDato() == " " || aux2->getAnt()->getAnt()->getDato() == ".") {
+										//si es espacio en blanco, espacio para colocar una caja
+										mover = true;
+									}
+									else {
+										mover = false;
+									}
+
+								}
+								else { mover = false; }
+							}
+						}
+					}
+
+
+					// seccion para aplicar cambios
+					if (mover) {
+
+						if (aux2->getAnt()->getDato() != "$" && aux2->getAnt()->getDato() != "!") { // si Ant diferente de caja
+
+
+							if (aux2->getAnt()->getDato() == " ") {// si Ant igual a espacio en blanco
+								aux2->getAnt()->setDato("@");
+							}
+							else {
+								//si habia espacio para colocar caja
+								aux2->getAnt()->setDato("a");
+							}
+
+						}
+						else {
+							if (aux2->getAnt()->getAnt()->getDato() == ".") {
+								// si Ant de la caja  habia espacio para colocar caja
+								aux2->getAnt()->getAnt()->setDato("!");
+							}
+							else {
+								aux2->getAnt()->getAnt()->setDato("$");
+							}
+
+							if (aux2->getAnt()->getDato() == "$") {
+								// si donde la caja estaba NO existia punto para colocar una caja
+								aux2->getAnt()->setDato("@");
+							}
+							else { // si la caja estaba ubicada en el espacio donde corresponde
+								aux2->getAnt()->setDato("a");
+							}
+
+						}
+
+						// terminar de mover al personaje de la posicion donde estaba
+						if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
+							aux2->setDato(" ");
+						}
+						else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
+							aux2->setDato(".");
+						}
+
+						return true;
+					}
+					return false;
 					break;
 				}
 				case 'D': {
+
+					if (aux2->getSig()->getDato() == "@" || aux2->getSig()->getDato() == "a" || aux2->getSig()->getDato() == "#") {
+						// si es un jugador,pared
+						mover = false;
+					}
+					else {
+						if (aux2->getSig()->getDato() == " " || aux2->getSig()->getDato() == ".") {
+							//si es espacio en blanco, espacio para colocar una caja
+							mover = true;
+						}
+						else {
+							if (aux2->getSig()->getDato() == "$" || aux2->getSig()->getDato() == "!") {
+								//si es una caja,Caja ubicada en el espacio donde corresponde
+								if (aux2->getSig()->getSig() != NULL) {
+
+									if (aux2->getSig()->getSig()->getDato() == " " || aux2->getSig()->getSig()->getDato() == ".") {
+										//si es espacio en blanco, espacio para colocar una caja
+										mover = true;
+									}
+									else {
+										mover = false;
+									}
+
+								}
+								else { mover = false; }
+							}
+						}
+					}
+
+
+					// seccion para aplicar cambios
+					if (mover) {
+
+						if (aux2->getSig()->getDato() != "$" && aux2->getSig()->getDato() != "!") { // si Sig diferente de caja
+
+
+							if (aux2->getSig()->getDato() == " ") {// si Sig igual a espacio en blanco
+								aux2->getSig()->setDato("@");
+							}
+							else {
+								//si habia espacio para colocar caja
+								aux2->getSig()->setDato("a");
+							}
+
+						}
+						else {
+							if (aux2->getSig()->getSig()->getDato() == ".") {
+								// si Sig de la caja  habia espacio para colocar caja
+								aux2->getSig()->getSig()->setDato("!");
+							}
+							else {
+								aux2->getSig()->getSig()->setDato("$");
+							}
+
+							if (aux2->getSig()->getDato() == "$") {
+								// si donde la caja estaba NO existia punto para colocar una caja
+								aux2->getSig()->setDato("@");
+							}
+							else { // si la caja estaba ubicada en el espacio donde corresponde
+								aux2->getSig()->setDato("a");
+							}
+
+						}
+
+						// terminar de mover al personaje de la posicion donde estaba
+						if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
+							aux2->setDato(" ");
+						}
+						else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
+							aux2->setDato(".");
+						}
+
+						return true;
+					}
+					return false;
 					break;
 				}
 				default:
+					return false;
 					break;
 				}
 			}
@@ -277,5 +489,7 @@ void Matriz::verificarMovimiento(char movimiento)
 		aux = aux->getAbajo();
 	}
 
+
+	return false;
 }
 
