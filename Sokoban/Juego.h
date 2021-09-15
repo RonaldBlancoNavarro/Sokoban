@@ -35,6 +35,11 @@ private:
 	Boton* btnN4;
 	Boton* btnN5;
 
+	// texturas para graficar posiciones
+	Texture* textureL;
+	Texture* textureC1;
+	Texture* textureP;
+	Sprite* spritePos;
 
 public:
 

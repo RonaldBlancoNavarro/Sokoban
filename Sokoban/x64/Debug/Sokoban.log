@@ -1,1 +1,10 @@
-﻿  Sokoban.vcxproj -> D:\Escritorio\Sokoban\Sokoban\x64\Debug\Sokoban.exe
+﻿  Juego.cpp
+D:\Escritorio\Sokoban\Sokoban\Juego.cpp(21,35): warning C4244: '=': conversión de 'T' a 'float'; posible pérdida de datos
+          with
+          [
+              T=unsigned int
+          ]
+D:\Escritorio\Sokoban\Sokoban\Juego.cpp(271,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  main.cpp
+  Generando código...
+  Sokoban.vcxproj -> D:\Escritorio\Sokoban\Sokoban\x64\Debug\Sokoban.exe

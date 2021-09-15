@@ -50,6 +50,13 @@ Juego::Juego() {
 
     btnSiguiente = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 300, 150, 80, &*font, "Siguiente", 25, Color::Yellow, Color::Green, Color::Red);
     btnAtras = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 420, 150, 80, &*font, "Atras", 25, Color::Red, Color::Green, Color::Black);
+    
+    textureL = new Texture();
+    textureL->loadFromFile("ladrillo.png");
+    textureC1 = new Texture();
+    textureC1->loadFromFile("caja1.png");
+    textureP = new Texture();
+    textureP->loadFromFile("personaje.png");
 }
 
 void Juego::mostrarVentana() // Loop principal
@@ -222,48 +229,40 @@ void Juego::graficar()
 }
 
 void Juego::graficarDato(string dato) {
-    Texture* texture;
-    Sprite* sprite;
+
     if (dato == "#") {
-        texture = new Texture();
-        sprite = new Sprite();
-        texture->loadFromFile("ladrillo.png");
-        sprite->setTexture(*texture);
-        sprite->setPosition(posicion);
-        ventana->draw(*sprite);
+        spritePos = new Sprite();
+        spritePos->setTexture(*textureL);
+        spritePos->setPosition(posicion);
+        ventana->draw(*spritePos);
     }
     else if (dato == "$") {
-        texture = new Texture();
-        sprite = new Sprite();
-        texture->loadFromFile("caja1.png");
-        sprite->setTexture(*texture);
-        sprite->setPosition(posicion);
-        ventana->draw(*sprite);
+        spritePos = new Sprite();
+        spritePos->setTexture(*textureC1);
+        spritePos->setPosition(posicion);
+        ventana->draw(*spritePos);
     }
-    else if(dato == "@" || dato == "a") {
-        texture = new Texture();
-        sprite = new Sprite();
-        texture->loadFromFile("personaje.png");
-        sprite->setTexture(*texture);
-        sprite->setPosition(posicion);
-        ventana->draw(*sprite);
+    else if (dato == "@" || dato == "a") {
+        spritePos = new Sprite();
+        spritePos->setTexture(*textureP);
+        spritePos->setPosition(posicion);
+        ventana->draw(*spritePos);
     }
     else if (dato == "!") {
-        texture = new Texture();
-        sprite = new Sprite();
-        texture->loadFromFile("caja1.png");
-        sprite->setTexture(*texture);
-        sprite->setPosition(posicion);
-        sprite->setColor(Color::Cyan);
-        ventana->draw(*sprite);
+        spritePos = new Sprite();
+        spritePos->setTexture(*textureC1);
+        spritePos->setPosition(posicion);
+        spritePos->setColor(Color::Cyan);
+        ventana->draw(*spritePos);
     }
     else if (dato == ".") {
-     sf::CircleShape shape(10.f);
-        shape.setPosition(posicion.x+15,posicion.y+15);
+        sf::CircleShape shape(10.f);
+        shape.setPosition(posicion.x + 15, posicion.y + 15);
         // set the shape color to green
         shape.setFillColor(sf::Color::Red);
         ventana->draw(shape);
     }
+
 }
 
 void Juego::procesarMapa() {  
