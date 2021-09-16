@@ -7,10 +7,7 @@ int main()
     //Matriz mat;
     //mat.cargarMatriz("Mapa2");
     //mat.mostrar();
-    Juego *game = new Juego();
+    Juego* game = new Juego();
     game->mostrarVentana();
-
-    
-
     return 0;
 }

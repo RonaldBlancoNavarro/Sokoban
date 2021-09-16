@@ -3,8 +3,11 @@
 using namespace sf;
 
 Juego::Juego() {
-    mat = new Matriz();   
+    mat = new Matriz();
+    clock = new Clock();
+    tiempo = new Time();
     posicion = { 0,0 };
+    solucion = false;
     ventana = new RenderWindow(VideoMode(900, 700), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
@@ -24,7 +27,7 @@ Juego::Juego() {
     titulo.setCharacterSize(50);
     titulo.setFillColor(Color::White);
     titulo.setPosition(centro - titulo.getGlobalBounds().width / 2.f, 50);
-
+    
 
     btnNuevoJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 140, 170, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
     btnCargarJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 260, 170, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
@@ -57,7 +60,7 @@ Juego::Juego() {
     textureC1->loadFromFile("caja1.png");
     textureP = new Texture();
     textureP->loadFromFile("personaje.png");
-
+    
     pila = new stack<string>();
 }
 
@@ -87,6 +90,7 @@ void Juego::dibujarVentana()
 void Juego::procesarEventos()
 {
     sf::Event event;
+    
     while (ventana->pollEvent(event)) // pollevent : escuchar evento 
     {
         if (event.type == sf::Event::Closed) {
@@ -96,7 +100,6 @@ void Juego::procesarEventos()
         if (event.type == sf::Event::KeyPressed) {
             movientoPersonaje(event);
         }
-
         // get mouse position
         Vector2f posMouse = Vector2f(Mouse::getPosition(*ventana));
 
@@ -217,9 +220,74 @@ void Juego::graficar()
     if (estadoSubmenu == SBMN_SOLUCIONNIVEL) {
         descripcion.setString("Seleccione uno de los niveles, Para Visualizar su Solucion");
         ventana->draw(descripcion);
+        if (btnN1->procesarBoton(&*ventana)) {
+            mapa = MAPA1;
+            mat->limpiarMatriz();
+            mat->cargarMatriz("Mapa1");
+            btnN1->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCION;
+            solucion = true;
+        }
+
+        if (btnN2->procesarBoton(&*ventana)) {
+            mapa = MAPA2;
+            mat->limpiarMatriz();
+            mat->cargarMatriz("Mapa2");
+            btnN2->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCION;
+            solucion = true;
+        }
+
+        if (btnN3->procesarBoton(&*ventana)) {
+            mapa = MAPA3;
+            mat->limpiarMatriz();
+            mat->cargarMatriz("Mapa3");
+            btnN3->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCION;
+        }
+
+        if (btnN4->procesarBoton(&*ventana)) {
+            mapa = MAPA4;
+            mat->limpiarMatriz();
+            mat->cargarMatriz("Mapa4");
+            btnN4->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCION;
+        }
+
+        if (btnN5->procesarBoton(&*ventana)) {
+            mapa = MAPA5;
+            mat->limpiarMatriz();
+            mat->cargarMatriz("Mapa5");
+            btnN5->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCION;
+        }
+
+        btnAtras->setBounds(Vector2f(150, 80));
+        btnAtras->setPosicion(Vector2f(centro - titulo.getGlobalBounds().width / 3.f, 420));
+
+        if (btnAtras->procesarBoton(&*ventana)) {
+            //cout << "Atras" << endl;
+            btnAtras->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_INACTIVO;
+        }
     }
+    if (estadoSubmenu == SBMN_SOLUCION) {
+        procesarMapa();
+        if (solucion) {
+            solucionNivel();
+        }
+        btnAtras->setBounds(Vector2f(120, 60));
+        btnAtras->setPosicion(Vector2f((float)40, (float)615));
+        if (btnAtras->procesarBoton(&*ventana)) {
+            cout << "Atras" << endl;
+            btnAtras->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_SOLUCIONNIVEL;
+        }
+    }
+
     if (estadoSubmenu == SBMN_PARTIDA) {
         procesarMapa();
+
         btnAtras->setBounds(Vector2f(120, 60));
         btnAtras->setPosicion(Vector2f((float)40, (float)615));
         if (btnAtras->procesarBoton(&*ventana)) {
@@ -334,4 +402,20 @@ bool Juego::finalizarNivel()
     }
 
     return bandera;
+}
+
+void Juego::solucionNivel() {
+  
+    char nivel_1[] = { 'W','A','W','D','W','D','D','D','D','D','D','S','S','S','A','A','W','A','A','A','D','D','D','S','D','D','W','W','W','W','A','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','S','D','D','W','A','D','W','W','A','S','S','D','S','A','W','W','W','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','D','W','D','S','W','W','A','A','A','S','W','A','A','A','S','A','S','S','D','W','D','D','D','D','A','W','W','D','D','S','S','W','W','A','A','A','A','A','S','A','S','D','D','D','D','D','D','A','A','W','W','A','A','S','A','S','D','D','D'};
+    
+    for (int i = 0; i < sizeof(nivel_1);){
+        *tiempo = clock->getElapsedTime();
+        if (tiempo->asSeconds() > 0.3) { //Si este condicional se elimina, se ejecuta todo de una vez
+            mat->verificarMovimiento(nivel_1[i]);
+            cout << nivel_1[i];
+            i++;          
+            clock->restart();
+        }
+    }
+    solucion = false;
 }
