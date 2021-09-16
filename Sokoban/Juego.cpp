@@ -8,7 +8,7 @@ Juego::Juego() {
     ventana = new RenderWindow(VideoMode(900, 700), "SOKOBAN");
     imagen = new Texture();
     sprite = new Sprite();
-    imagen->loadFromFile("caja.png", sf::IntRect(0, 0, 800, 600));
+    imagen->loadFromFile("fondo.png", sf::IntRect(0, 0, 800, 600));
     sprite->setTexture(*imagen);
     sprite->setScale((float)ventana->getSize().x / sprite->getTexture()->getSize().x, (float)ventana->getSize().y / sprite->getTexture()->getSize().y); // tama�o deseado dividido tama�o actual
 
@@ -57,6 +57,8 @@ Juego::Juego() {
     textureC1->loadFromFile("caja1.png");
     textureP = new Texture();
     textureP->loadFromFile("personaje.png");
+
+    pila = new stack<string>();
 }
 
 void Juego::mostrarVentana() // Loop principal
@@ -245,8 +247,13 @@ void Juego::graficarDato(string dato) {
     else if (dato == "@" || dato == "a") {
         spritePos = new Sprite();
         spritePos->setTexture(*textureP);
+        spritePos->setScale(50.f / spritePos->getTexture()->getSize().x, 50.f / spritePos->getTexture()->getSize().y); // tamaï¿½o deseado dividido tamaï¿½o actual
         spritePos->setPosition(posicion);
         ventana->draw(*spritePos);
+
+        if (dato == "a") {
+            pila->push(dato);
+        }
     }
     else if (dato == "!") {
         spritePos = new Sprite();
@@ -254,6 +261,9 @@ void Juego::graficarDato(string dato) {
         spritePos->setPosition(posicion);
         spritePos->setColor(Color::Cyan);
         ventana->draw(*spritePos);
+
+        // push en pila !
+        pila->push(dato);
     }
     else if (dato == ".") {
         sf::CircleShape shape(10.f);
@@ -261,6 +271,9 @@ void Juego::graficarDato(string dato) {
         // set the shape color to green
         shape.setFillColor(sf::Color::Red);
         ventana->draw(shape);
+
+        // push en pila .
+        pila->push(dato);
     }
 
 }
@@ -281,6 +294,11 @@ void Juego::procesarMapa() {
         posicion.y += 50;
         aux = aux->getAbajo();
     }
+
+    if (finalizarNivel()) {
+        //cambio estado submenu  o algo mas
+        cout << "fin nivel" << endl;
+    }
 }
 
 void Juego::movientoPersonaje(Event event)
@@ -300,4 +318,20 @@ void Juego::movientoPersonaje(Event event)
 
  /*   cout << endl;
     mat->mostrar();*/
+}
+
+bool Juego::finalizarNivel()
+{
+    bool bandera = true;
+
+    while (!pila->empty())
+    {
+        if (pila->top() == "." || pila->top() == "a") { // si hay esppacio para caja no finalisa nivel
+
+            bandera = false;
+        }
+        pila->pop();
+    }
+
+    return bandera;
 }

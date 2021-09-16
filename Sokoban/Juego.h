@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Matriz.h"
 #include "Boton.h"
+#include <stack>
 #include <iostream>
 using namespace sf;// este es para usar el SFML
 using namespace std;
@@ -41,6 +42,8 @@ private:
 	Texture* textureP;
 	Sprite* spritePos;
 
+	stack<string>* pila;
+
 public:
 
 	Juego();
@@ -51,4 +54,5 @@ public:
 	void graficarDato(string);
 	void graficar();
 	void movientoPersonaje(Event event);
+	bool finalizarNivel();
 };
