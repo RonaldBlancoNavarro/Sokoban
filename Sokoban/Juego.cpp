@@ -1,6 +1,7 @@
 #include "Juego.h"
 #include <SFML/Graphics.hpp>
 using namespace sf;
+using namespace std;
 
 Juego::Juego() {
     mat = new Matriz();
@@ -62,6 +63,8 @@ Juego::Juego() {
     textureP->loadFromFile("personaje.png");
     
     pila = new stack<string>();
+
+    contMov = 0;
 }
 
 void Juego::mostrarVentana() // Loop principal
@@ -226,7 +229,9 @@ void Juego::graficar()
             mat->cargarMatriz("Mapa1");
             btnN1->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_SOLUCION;
+
             solucion = true;
+            contMov = 0;
         }
 
         if (btnN2->procesarBoton(&*ventana)) {
@@ -273,9 +278,7 @@ void Juego::graficar()
     }
     if (estadoSubmenu == SBMN_SOLUCION) {
         procesarMapa();
-        if (solucion) {
-            solucionNivel();
-        }
+
         btnAtras->setBounds(Vector2f(120, 60));
         btnAtras->setPosicion(Vector2f((float)40, (float)615));
         if (btnAtras->procesarBoton(&*ventana)) {
@@ -363,6 +366,10 @@ void Juego::procesarMapa() {
         aux = aux->getAbajo();
     }
 
+    if (solucion) {
+        solucionNivel();
+    }
+
     if (finalizarNivel()) {
         //cambio estado submenu  o algo mas
         cout << "fin nivel" << endl;
@@ -405,17 +412,21 @@ bool Juego::finalizarNivel()
 }
 
 void Juego::solucionNivel() {
-  
-    char nivel_1[] = { 'W','A','W','D','W','D','D','D','D','D','D','S','S','S','A','A','W','A','A','A','D','D','D','S','D','D','W','W','W','W','A','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','S','D','D','W','A','D','W','W','A','S','S','D','S','A','W','W','W','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','D','W','D','S','W','W','A','A','A','S','W','A','A','A','S','A','S','S','D','W','D','D','D','D','A','W','W','D','D','S','S','W','W','A','A','A','A','A','S','A','S','D','D','D','D','D','D','A','A','W','W','A','A','S','A','S','D','D','D'};
+
+    if (contMov < sizeof(nivel_1)){
     
-    for (int i = 0; i < sizeof(nivel_1);){
         *tiempo = clock->getElapsedTime();
+   
         if (tiempo->asSeconds() > 0.3) { //Si este condicional se elimina, se ejecuta todo de una vez
-            mat->verificarMovimiento(nivel_1[i]);
-            cout << nivel_1[i];
-            i++;          
+            mat->verificarMovimiento(nivel_1[contMov]);
+            cout << nivel_1[contMov];
+            contMov++;          
             clock->restart();
         }
+
     }
-    solucion = false;
+    else {
+        solucion = false;
+        contMov = 0;
+    }
 }
