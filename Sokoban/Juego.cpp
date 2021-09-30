@@ -30,10 +30,11 @@ Juego::Juego() {
     titulo.setPosition(centro - titulo.getGlobalBounds().width / 2.f, 50);
     
 
-    btnNuevoJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 140, 170, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
-    btnCargarJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 260, 170, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
-    btnSolucionNivel = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 380, 170, 80, &*font, "Solucion Nivel", 25, Color::Cyan, Color::Green, Color::Black);
+    btnNuevoJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 200, 170, 80, &*font, "Nuevo Juego", 25, Color::Blue, Color::Green, Color::Red);
+    btnCargarJuego = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 350, 170, 80, &*font, "Cargar Juego", 25, Color::Yellow, Color::Green, Color::Red);
     btnSalir = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 500, 170, 80, &*font, "Salir", 25, Color::Red, Color::Green, Color::Black);
+    btnSolucionNivel = new Boton(centro - titulo.getGlobalBounds().width / 3.f, 380, 170, 80, &*font, "Solucion Nivel", 25, Color::Cyan, Color::Green, Color::Black);
+
 
     this->estadoSubmenu = SBMN_INACTIVO;
     this->mapa = MAPA1;
@@ -100,21 +101,21 @@ void Juego::procesarEventos()
             ventana->close();
         }
 
-        if (event.type == sf::Event::KeyPressed) {
+        if (event.type == sf::Event::KeyPressed && estadoSubmenu == SBMN_PARTIDA) { 
             movientoPersonaje(event);
         }
         // get mouse position
         Vector2f posMouse = Vector2f(Mouse::getPosition(*ventana));
 
+        // MENU Principal
         if (estadoSubmenu == SBMN_INACTIVO) {
 
             btnNuevoJuego->actualizarBoton(posMouse);
             btnCargarJuego->actualizarBoton(posMouse);
-            btnSolucionNivel->actualizarBoton(posMouse);
             btnSalir->actualizarBoton(posMouse);
         }
 
-        if (estadoSubmenu != SBMN_INACTIVO) {
+        if (estadoSubmenu == SBMN_NUEVOJUEGO) {
 
             btnN1->actualizarBoton(posMouse);
             btnN2->actualizarBoton(posMouse);
@@ -126,21 +127,26 @@ void Juego::procesarEventos()
             btnAtras->actualizarBoton(posMouse);
         }
 
+        if (estadoSubmenu == SBMN_PARTIDA) {
+            btnAtras->actualizarBoton(posMouse);
+        }
+
     }
 }
 
 void Juego::graficar()
 {
-    // lo mas seguro aqui hay que llamar al metodo que crea el menu
+    
     ventana->draw(*sprite); //imagen
 
-    if (estadoSubmenu == SBMN_INACTIVO) {
+    // MENU Principal
+    if (estadoSubmenu == SBMN_INACTIVO) { 
 
         ventana->draw(titulo);
-
-        if (btnNuevoJuego->procesarBoton(&*ventana)) { // Botones
+        // Botones
+        if (btnNuevoJuego->procesarBoton(&*ventana)) { 
             btnNuevoJuego->setEstadoBoton(BTN_INACTIVO);
-            estadoSubmenu = SBMN_SUBMENU;
+            estadoSubmenu = SBMN_NUEVOJUEGO;
         }
 
         if (btnCargarJuego->procesarBoton(&*ventana)) {
@@ -148,18 +154,13 @@ void Juego::graficar()
             estadoSubmenu = SBMN_CARGARJUEGO;
         }
 
-        if (btnSolucionNivel->procesarBoton(&*ventana)) {
-            btnSolucionNivel->setEstadoBoton(BTN_INACTIVO);
-            estadoSubmenu = SBMN_SOLUCIONNIVEL;
-        }
-
         if (btnSalir->procesarBoton(&*ventana)) {
             btnSalir->setEstadoBoton(BTN_INACTIVO);
             ventana->close();
         }
     }
-
-    if (estadoSubmenu == SBMN_SUBMENU) {
+    // MENU Nuevo Juego
+    if (estadoSubmenu == SBMN_NUEVOJUEGO) {
         descripcion.setString("Seleccione uno de los niveles, Para iniciar un Nuevo Juego");
         ventana->draw(descripcion);
         if (btnN1->procesarBoton(&*ventana)) { 
@@ -206,20 +207,24 @@ void Juego::graficar()
         btnAtras->setPosicion(Vector2f(centro - titulo.getGlobalBounds().width / 3.f, 420));
         
         if (btnAtras->procesarBoton(&*ventana)) {
-            //cout << "Atras" << endl;
             btnAtras->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_INACTIVO;
         }
     }
+    // Pantalla partida
+    if (estadoSubmenu == SBMN_PARTIDA) {
+        procesarMapa();
 
-    if (estadoSubmenu == SBMN_NUEVOJUEGO) {
-        descripcion.setString("Seleccione uno de los niveles, Para iniciar un Nuevo Juego");
-        ventana->draw(descripcion);
+        btnAtras->setBounds(Vector2f(120, 60));
+        btnAtras->setPosicion(Vector2f((float)40, (float)615));
+        if (btnAtras->procesarBoton(&*ventana)) {
+            cout << "Atras" << endl;
+            btnAtras->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_NUEVOJUEGO;
+        }
     }
-    if (estadoSubmenu == SBMN_CARGARJUEGO) {
-        descripcion.setString("Seleccione uno de los niveles, Para Cargar un Juego Anterior");
-        ventana->draw(descripcion);
-    }
+
+    // Menu Elegir ver repeticion o jugar sig nivel
     if (estadoSubmenu == SBMN_SOLUCIONNIVEL) {
         descripcion.setString("Seleccione uno de los niveles, Para Visualizar su Solucion");
         ventana->draw(descripcion);
@@ -229,6 +234,12 @@ void Juego::graficar()
             mat->cargarMatriz("Mapa1");
             btnN1->setEstadoBoton(BTN_INACTIVO);
             estadoSubmenu = SBMN_SOLUCION;
+
+            char nivel_1[137] = { 'W','A','W','D','W','D','D','D','D','D','D','S','S','S','A','A','W','A','A','A','D','D','D','S','D','D','W','W','W','W','A','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','S','D','D','W','A','D','W','W','A','S','S','D','S','A','W','W','W','A','A','A','A','A','S','A','S','S','D','W','D','D','D','D','D','W','D','S','W','W','A','A','A','S','W','A','A','A','S','A','S','S','D','W','D','D','D','D','A','W','W','D','D','S','S','W','W','A','A','A','A','A','S','A','S','D','D','D','D','D','D','A','A','W','W','A','A','S','A','S','D','D','D' };
+
+            for (int i = 0; i < sizeof(nivel_1);i++) {
+                nivelSolucion.push_back(nivel_1[i]);
+            }
 
             solucion = true;
             contMov = 0;
@@ -276,6 +287,7 @@ void Juego::graficar()
             estadoSubmenu = SBMN_INACTIVO;
         }
     }
+    ///Visualizar solucion nivel
     if (estadoSubmenu == SBMN_SOLUCION) {
         procesarMapa();
 
@@ -288,17 +300,6 @@ void Juego::graficar()
         }
     }
 
-    if (estadoSubmenu == SBMN_PARTIDA) {
-        procesarMapa();
-
-        btnAtras->setBounds(Vector2f(120, 60));
-        btnAtras->setPosicion(Vector2f((float)40, (float)615));
-        if (btnAtras->procesarBoton(&*ventana)) {
-            cout << "Atras" << endl;
-            btnAtras->setEstadoBoton(BTN_INACTIVO);
-            estadoSubmenu = SBMN_SUBMENU;
-        }
-    }
 }
 
 void Juego::graficarDato(string dato) {
@@ -372,7 +373,11 @@ void Juego::procesarMapa() {
 
     if (finalizarNivel()) {
         //cambio estado submenu  o algo mas
-        cout << "fin nivel" << endl;
+        //cout << "fin nivel" << endl;
+
+
+        solucion = true;
+        contMov = 0;
     }
 }
 
@@ -413,13 +418,13 @@ bool Juego::finalizarNivel()
 
 void Juego::solucionNivel() {
 
-    if (contMov < sizeof(nivel_1)){
+    if (contMov < nivelSolucion.size()){
     
         *tiempo = clock->getElapsedTime();
    
         if (tiempo->asSeconds() > 0.3) { //Si este condicional se elimina, se ejecuta todo de una vez
-            mat->verificarMovimiento(nivel_1[contMov]);
-            cout << nivel_1[contMov];
+            mat->verificarMovimiento(nivelSolucion[contMov]);
+            cout << nivelSolucion[contMov];
             contMov++;          
             clock->restart();
         }
