@@ -8,8 +8,7 @@ Boton::Boton()
 	font = new Font();
 }
 
-Boton::Boton(float x, float y, float ancho, float alto, Font* font, string texto, int tamText,
-	Color colorInactivo, Color colorHover, Color colorActivo)
+Boton::Boton(float x, float y, float ancho, float alto, Font* font, string texto, int tamText, Color colorInactivo, Color colorHover, Color colorActivo)
 {
 	this->estadoBoton = BTN_INACTIVO;
 
@@ -29,6 +28,7 @@ Boton::Boton(float x, float y, float ancho, float alto, Font* font, string texto
 	this->colorInactivo = colorInactivo;
 	this->colorHover = colorHover;
 	this->colorActivo = colorActivo;
+	this->colorSelected = Color::Cyan;
 }
 
 void Boton::actualizarBoton(Vector2f posMouse) // el hombre puso const  &
@@ -45,7 +45,6 @@ void Boton::actualizarBoton(Vector2f posMouse) // el hombre puso const  &
 
 		//activo
 		if (Mouse::isButtonPressed(Mouse::Left)) {
-
 			this->estadoBoton = BTN_ACTIVO;
 		}
 	}

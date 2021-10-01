@@ -8,7 +8,7 @@
 using namespace sf;// este es para usar el SFML
 using namespace std;
 
-enum estados_boton { BTN_INACTIVO = 0, BTN_HOVER, BTN_ACTIVO };
+enum estados_boton { BTN_INACTIVO = 0, BTN_HOVER, BTN_ACTIVO};
 
 class Boton {
 
@@ -23,6 +23,7 @@ private:
 	Color colorInactivo;
 	Color colorHover;
 	Color colorActivo;
+	Color colorSelected;
 
 
 public:

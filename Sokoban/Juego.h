@@ -7,7 +7,8 @@
 #include <Windows.h>
 #include <vector>
 #include <thread> 
-using namespace sf;// este es para usar el SFML
+#include <string>
+using namespace sf;// este es para usar el SFML ......
 using namespace std;
 
 enum estados_submenu { SBMN_INACTIVO = 0, SBMN_SUBMENU, SBMN_NUEVOJUEGO, SBMN_CARGARJUEGO, SBMN_SOLUCIONNIVEL, SBMN_SOLUCION, SBMN_PARTIDA};
@@ -25,17 +26,21 @@ private:
 	float centro;
 	bool solucion;
 	Vector2f posicion;
-	String nivel;
+	string nivel;
 	Boton* btnNuevoJuego;
 	Boton* btnCargarJuego;
 	Boton* btnSolucionNivel;
 	Boton* btnSalir;
-
+	Boton* btnGuardarPartida;
+	Boton* btnMenuPrincipal;
+	Boton* btnReiniciarNivel;
 	short unsigned estadoSubmenu; // unsigned es para no aceptar negativos
 	short unsigned mapa;
 	Text descripcion;
 	Boton* btnSiguiente;
 	Boton* btnAtras;
+	Boton* btnRepeticion;
+	Boton* btnSigNivel;
 	Boton* btnN1;
 	Boton* btnN2;
 	Boton* btnN3;
@@ -46,7 +51,9 @@ private:
 	Texture* textureL;
 	Texture* textureC1;
 	Texture* textureP;
+	Texture* reiniciar;
 	Sprite* spritePos;
+	Sprite* reinicio;
 
 	stack<string>* pila;
 

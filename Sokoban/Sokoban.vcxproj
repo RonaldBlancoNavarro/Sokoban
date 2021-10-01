@@ -158,9 +158,14 @@
     <ClInclude Include="Juego.h" />
     <ClInclude Include="Matriz.h" />
     <ClInclude Include="Nodo.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Reiniciar.png" />
     <Image Include="x64\Debug\Sokoban.tlog\caja.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Sokoban.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -62,70 +62,72 @@ void Matriz::cargarMatriz(string mapa) {
 		while (!file.eof()) {
 			caracter = file.get();
 			nodo = new Nodo(caracter);
-			if (ini == NULL) { // coloca el primer nodo
-				ini = nodo;
-				fin = nodo;
-				finAb = nodo;				
-				ini->setSig(NULL);
-				ini->setAnt(NULL);
-				ini->setAbajo(NULL);
-				ini->setArriba(NULL);
-			}
-			else
-			{
-				if (nodo->getDato()[0] != 10 && primeraFila) {
-					fin->setSig(nodo);
-					nodo->setAnt(fin);
-					nodo->setArriba(NULL);
-					nodo->setAbajo(NULL);
-					fin = nodo;
-				}
-				else if (nodo->getDato()[0] == 10 && primeraFila) {
-					fin->setSig(nodo);
-					nodo->setAnt(fin);
-					nodo->setArriba(NULL);
-					nodo->setAbajo(NULL);
-					nodo->setSig(NULL);
-					aux = finAb;
-					primeraColumna = true;
-					primeraFila = false;
-				}
-				else if (primeraColumna) {
-					aux->setAbajo(nodo);
-					nodo->setArriba(aux);
-					nodo->setAnt(NULL);
-					nodo->setSig(NULL);
+			if (!file.eof()) {
+				if (ini == NULL) { // coloca el primer nodo
+					ini = nodo;
 					fin = nodo;
 					finAb = nodo;
-					aux = aux->getSig();
-					primeraColumna = false;
+					ini->setSig(NULL);
+					ini->setAnt(NULL);
+					ini->setAbajo(NULL);
+					ini->setArriba(NULL);
 				}
-				else if (nodo->getDato()[0] == 10  && !primeraFila) {
-					fin->setSig(nodo);
-					nodo->setAnt(fin);
-					nodo->setArriba(aux);
-					nodo->setAbajo(NULL);
-					nodo->setSig(NULL);
-					if (aux != NULL) {
-						aux->setAbajo(nodo);
+				else
+				{
+					if (nodo->getDato()[0] != 10 && primeraFila) {
+						fin->setSig(nodo);
+						nodo->setAnt(fin);
+						nodo->setArriba(NULL);
+						nodo->setAbajo(NULL);
+						fin = nodo;
 					}
-					aux = finAb;
-					primeraColumna = true;
-				}
-				else if (nodo->getDato()[0] != 10 && !primeraFila && !primeraColumna) {					
-					fin->setSig(nodo);
-					nodo->setAnt(fin);
-					nodo->setSig(NULL);
-					nodo->setArriba(aux);
-					nodo->setAbajo(NULL);
-					fin = nodo;
-					if (aux != NULL) {
+					else if (nodo->getDato()[0] == 10 && primeraFila) {
+						fin->setSig(nodo);
+						nodo->setAnt(fin);
+						nodo->setArriba(NULL);
+						nodo->setAbajo(NULL);
+						nodo->setSig(NULL);
+						aux = finAb;
+						primeraColumna = true;
+						primeraFila = false;
+					}
+					else if (primeraColumna) {
 						aux->setAbajo(nodo);
+						nodo->setArriba(aux);
+						nodo->setAnt(NULL);
+						nodo->setSig(NULL);
+						fin = nodo;
+						finAb = nodo;
 						aux = aux->getSig();
+						primeraColumna = false;
 					}
-					else {
-						aux = NULL;
-					}					
+					else if (nodo->getDato()[0] == 10 && !primeraFila) {
+						fin->setSig(nodo);
+						nodo->setAnt(fin);
+						nodo->setArriba(aux);
+						nodo->setAbajo(NULL);
+						nodo->setSig(NULL);
+						if (aux != NULL) {
+							aux->setAbajo(nodo);
+						}
+						aux = finAb;
+						primeraColumna = true;
+					}
+					else if (nodo->getDato()[0] != 10 && !primeraFila && !primeraColumna) {
+						fin->setSig(nodo);
+						nodo->setAnt(fin);
+						nodo->setSig(NULL);
+						nodo->setArriba(aux);
+						nodo->setAbajo(NULL);
+						fin = nodo;
+						if (aux != NULL) {
+							aux->setAbajo(nodo);
+							aux = aux->getSig();
+						}
+						else {
+							aux = NULL;
+						}
+					}
 				}
 			}
 		}
@@ -150,6 +152,29 @@ void Matriz::mostrar() {
 			aux = aux->getAbajo();
 		}
 	}
+}
+
+void Matriz::guardarPartida(string nombre) {
+	Nodo* aux = ini, *aux2 = NULL;
+	fstream file;
+	string ruta = ".\\Mapas\\" + nombre + ".txt";
+	file.open(ruta,ios_base::out);
+	if (!file.is_open()) {
+		cout << "Error abriendo el archivo" << endl;
+	}
+	else {
+		file << "1";
+		file << "\n";
+		while (aux != NULL) {
+			aux2 = aux;
+			while (aux2 != NULL) {
+				file << aux2->getDato();						
+				aux2 = aux2->getSig();
+			}
+			aux = aux->getAbajo();
+		}
+		file.close();
+	}	 
 }
 
 bool Matriz::verificarMovimiento(char movimiento)
@@ -488,8 +513,6 @@ bool Matriz::verificarMovimiento(char movimiento)
 		}
 		aux = aux->getAbajo();
 	}
-
-
 	return false;
 }
 

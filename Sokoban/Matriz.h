@@ -24,5 +24,6 @@ public:
 	void limpiarMatriz();
 	void mostrar();
 	bool verificarMovimiento(char movimiento);
+	void guardarPartida(string);
 };
 #endif
