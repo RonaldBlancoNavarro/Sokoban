@@ -42,7 +42,7 @@ string Matriz::getMapa() {
 	return mapa;
 }
 
-void Matriz::cargarMatriz(string mapa) {
+void Matriz::cargarMatriz(string mapa) { // cargar matriz desde documento
 	ifstream file;
 	string caracter;
 	bool primeraFila = true;
@@ -74,14 +74,14 @@ void Matriz::cargarMatriz(string mapa) {
 				}
 				else
 				{
-					if (nodo->getDato()[0] != 10 && primeraFila) {
+					if (nodo->getDato()[0] != 10 && primeraFila) { // nodo != de salto linea en primer fila
 						fin->setSig(nodo);
 						nodo->setAnt(fin);
 						nodo->setArriba(NULL);
 						nodo->setAbajo(NULL);
 						fin = nodo;
 					}
-					else if (nodo->getDato()[0] == 10 && primeraFila) {
+					else if (nodo->getDato()[0] == 10 && primeraFila) { // nodo == de salto linea en primer fila
 						fin->setSig(nodo);
 						nodo->setAnt(fin);
 						nodo->setArriba(NULL);
@@ -91,7 +91,7 @@ void Matriz::cargarMatriz(string mapa) {
 						primeraColumna = true;
 						primeraFila = false;
 					}
-					else if (primeraColumna) {
+					else if (primeraColumna) { // si se esta en  la primer posicion  de una fila != de la primera
 						aux->setAbajo(nodo);
 						nodo->setArriba(aux);
 						nodo->setAnt(NULL);
@@ -101,7 +101,7 @@ void Matriz::cargarMatriz(string mapa) {
 						aux = aux->getSig();
 						primeraColumna = false;
 					}
-					else if (nodo->getDato()[0] == 10 && !primeraFila) {
+					else if (nodo->getDato()[0] == 10 && !primeraFila) { // nodo == de salto linea 
 						fin->setSig(nodo);
 						nodo->setAnt(fin);
 						nodo->setArriba(aux);
@@ -113,7 +113,7 @@ void Matriz::cargarMatriz(string mapa) {
 						aux = finAb;
 						primeraColumna = true;
 					}
-					else if (nodo->getDato()[0] != 10 && !primeraFila && !primeraColumna) {
+					else if (nodo->getDato()[0] != 10 && !primeraFila && !primeraColumna) { // nodo != de salto linea
 						fin->setSig(nodo);
 						nodo->setAnt(fin);
 						nodo->setSig(NULL);
@@ -138,7 +138,8 @@ void Matriz::cargarMatriz(string mapa) {
 void Matriz::limpiarMatriz() {
 	ini = NULL;
 }
-void Matriz::mostrar() {
+
+void Matriz::mostrar() { // imprimir datos de matriz
 	if (ini != NULL) {
 		Nodo *aux = ini,*aux2;
 		while (aux != NULL) {
@@ -154,7 +155,7 @@ void Matriz::mostrar() {
 	}
 }
 
-void Matriz::guardarPartida(string nombre) {
+void Matriz::guardarPartida(string nombre) { // guardado - ecritura de nivel en documento
 	Nodo* aux = ini, *aux2 = NULL;
 	fstream file;
 	string ruta = ".\\Mapas\\" + nombre + ".txt";

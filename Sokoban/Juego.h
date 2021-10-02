@@ -11,8 +11,10 @@
 using namespace sf;// este es para usar el SFML ......
 using namespace std;
 
+// estados_submenu : usado para cambio de elementos a mostrar en ventana
 enum estados_submenu { SBMN_INACTIVO = 0, SBMN_SUBMENU, SBMN_NUEVOJUEGO, SBMN_CARGARJUEGO, SBMN_SOLUCIONNIVEL, SBMN_SOLUCION, SBMN_PARTIDA};
 enum mapa_seleccionado {MAPA1 = 10 , MAPA2 = 9, MAPA3 = 13, MAPA4 = 11, MAPA5 = 9};
+
 class Juego {
 private:
 	Matriz *mat;

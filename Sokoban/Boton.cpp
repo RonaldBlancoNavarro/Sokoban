@@ -9,7 +9,7 @@ Boton::Boton()
 }
 
 Boton::Boton(float x, float y, float ancho, float alto, Font* font, string texto, int tamText, Color colorInactivo, Color colorHover, Color colorActivo)
-{
+{	// creacion de boton
 	this->estadoBoton = BTN_INACTIVO;
 
 	this->figura.setPosition(Vector2f(x, y));
@@ -31,7 +31,7 @@ Boton::Boton(float x, float y, float ancho, float alto, Font* font, string texto
 	this->colorSelected = Color::Cyan;
 }
 
-void Boton::actualizarBoton(Vector2f posMouse) // el hombre puso const  &
+void Boton::actualizarBoton(Vector2f posMouse) 
 {
 	// actualizacion de estado de boton
 
@@ -49,7 +49,7 @@ void Boton::actualizarBoton(Vector2f posMouse) // el hombre puso const  &
 		}
 	}
 
-	switch (estadoBoton)
+	switch (estadoBoton) // cambio color
 	{
 	case BTN_INACTIVO:
 		this->figura.setFillColor(this->colorInactivo);
@@ -66,9 +66,8 @@ void Boton::actualizarBoton(Vector2f posMouse) // el hombre puso const  &
 	}
 }
 
-bool Boton::procesarBoton(RenderWindow* ventana)
+bool Boton::procesarBoton(RenderWindow* ventana) // graficar boton en pantalla
 {
-	//actualizarBoton(posMouse);
 
 	ventana->draw(figura);
 	ventana->draw(texto);

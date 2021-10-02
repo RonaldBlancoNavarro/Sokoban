@@ -8,8 +8,8 @@ using namespace std;
 class Matriz
 {
 private:
-	Nodo *ini, *fin,*finAb;
-	string mapa;
+	Nodo *ini, *fin,*finAb;  // ini = inicio matriz . fin = posicicion final actual matriz . finAb = finAbajo primer posicion ultima fila
+	string mapa; // nombre documento con mapa nivel
 public:
 	Matriz();
 	void setIni(Nodo*);

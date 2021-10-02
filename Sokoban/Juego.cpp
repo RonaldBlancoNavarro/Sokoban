@@ -4,6 +4,7 @@ using namespace sf;
 using namespace std;
 
 Juego::Juego() {
+    // inicializacion de elementos
     mat = new Matriz();
     clock = new Clock();
     tiempo = new Time();
@@ -107,7 +108,7 @@ void Juego::procesarEventos()
             ventana->close();
         }
 
-        if (event.type == sf::Event::KeyPressed && estadoSubmenu == SBMN_PARTIDA) { 
+        if (event.type == sf::Event::KeyPressed && estadoSubmenu == SBMN_PARTIDA) { // captura de accion en teclado para movimiento
             movientoPersonaje(event);
         }
         // get mouse position
@@ -121,6 +122,7 @@ void Juego::procesarEventos()
             btnSalir->actualizarBoton(posMouse);
         }
 
+        // MENU Eleccion Nivel Nuevo Juego
         if (estadoSubmenu == SBMN_NUEVOJUEGO) {
 
             btnN1->actualizarBoton(posMouse);
@@ -133,12 +135,14 @@ void Juego::procesarEventos()
             btnAtras->actualizarBoton(posMouse);
         }
 
+        // Partida
         if (estadoSubmenu == SBMN_PARTIDA) {
             btnAtras->actualizarBoton(posMouse);
             btnGuardarPartida->actualizarBoton(posMouse);
             btnReiniciarNivel->actualizarBoton(posMouse);
         }
 
+        // MENU fin nivel
         if (estadoSubmenu == SBMN_SOLUCIONNIVEL){
             btnRepeticion->actualizarBoton(posMouse);
             btnSigNivel->actualizarBoton(posMouse);
@@ -269,7 +273,9 @@ void Juego::graficar()
             nivelSolucion.clear();
             mat->limpiarMatriz();
             int num = stoi(nivel);
-            num++;
+            if (num != 5) {// para no avanzar a un nivel 6
+                num++;
+            }
             nivel = to_string(num);
             mat->cargarMatriz("Mapa" + nivel);           
             estadoSubmenu = SBMN_PARTIDA;
@@ -295,31 +301,32 @@ void Juego::graficar()
 }
 
 void Juego::graficarDato(string dato) {
+    // pintado del dato guardado en respectiva posicion de matris (lista ortogonal)
 
-    if (dato == "#") {
+    if (dato == "#") { // pared
         spritePos = new Sprite();
         spritePos->setTexture(*textureL);
         spritePos->setPosition(posicion);
         ventana->draw(*spritePos);
     }
-    else if (dato == "$") {
+    else if (dato == "$") {//caja
         spritePos = new Sprite();
         spritePos->setTexture(*textureC1);
         spritePos->setPosition(posicion);
         ventana->draw(*spritePos);
     }
-    else if (dato == "@" || dato == "a") {
+    else if (dato == "@" || dato == "a") {// @ = jugador ... a = jugador sobre espacio para colocar una caja
         spritePos = new Sprite();
         spritePos->setTexture(*textureP);
         spritePos->setScale(50.f / spritePos->getTexture()->getSize().x, 50.f / spritePos->getTexture()->getSize().y); // tamaño deseado dividido entre tamaño actual
         spritePos->setPosition(posicion);
         ventana->draw(*spritePos);
 
-        if (dato == "a") {
+        if (dato == "a") { // push en pila !
             pila->push(dato);
         }
     }
-    else if (dato == "!") {
+    else if (dato == "!") { // Caja ubicada en el espacio donde corresponde
         spritePos = new Sprite();
         spritePos->setTexture(*textureC1);
         spritePos->setPosition(posicion);
@@ -329,7 +336,7 @@ void Juego::graficarDato(string dato) {
         // push en pila !
         pila->push(dato);
     }
-    else if (dato == ".") {
+    else if (dato == ".") { // espacio para colocar una caja
         sf::CircleShape shape(10.f);
         shape.setPosition(posicion.x + 15, posicion.y + 15);
         // set the shape color to green
@@ -342,11 +349,12 @@ void Juego::graficarDato(string dato) {
 
 }
 
-void Juego::procesarMapa() {  
+void Juego::procesarMapa() {  // recorrido de matriz para graficar sus datos
     Nodo* aux = NULL, * aux2 = NULL;
     aux = mat->getIni();
     float ancho = mapa * 50;
     posicion = { (float)(ventana->getSize().x/2) - ancho/2 , 50 };
+    // recorrido de matriz fila a fila
     while (aux != NULL) {
         aux2 = aux;
         while (aux2 != NULL) {
@@ -359,17 +367,18 @@ void Juego::procesarMapa() {
         aux = aux->getAbajo();
     }
 
-    if (solucion) {
+    if (solucion) { // ejecucion solucion nivel
         solucionNivel();
     }
 
-    if (finalizarNivel()) {      
+    if (finalizarNivel()) {  // salir de la pantalla de juego
         estadoSubmenu = SBMN_SOLUCIONNIVEL;
     }
 }
 
 void Juego::movientoPersonaje(Event event)
-{
+{    // captacion de movimiento, aceptacion o rechazo de este y guardado de este en nivelSolucion para repeticion
+
     if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
         nivelSolucion.push_back('W');
         mat->verificarMovimiento('W');
@@ -389,7 +398,7 @@ void Juego::movientoPersonaje(Event event)
 }
 
 bool Juego::finalizarNivel()
-{
+{// Inspeccion de pila para verificar nivel solucionado
     bool bandera = true;
 
     while (!pila->empty())
@@ -405,14 +414,15 @@ bool Juego::finalizarNivel()
 }
 
 void Juego::solucionNivel() {
+    // recorrido de vector nivelSolucion para mostrar los movientos guardados en este durante la repeticion
 
     if (contMov < nivelSolucion.size()){
     
         *tiempo = clock->getElapsedTime();
    
-        if (tiempo->asSeconds() > 0.3) { //Si este condicional se elimina, se ejecuta todo de una vez
+        if (tiempo->asSeconds() > 0.3) { //Delay   -  Si este condicional se elimina, se ejecuta todo de una vez
             mat->verificarMovimiento(nivelSolucion[contMov]);
-            cout << nivelSolucion[contMov];
+            //cout << nivelSolucion[contMov];
             contMov++;          
             clock->restart();
         }
