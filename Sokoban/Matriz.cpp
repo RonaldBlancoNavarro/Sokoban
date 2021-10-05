@@ -154,7 +154,20 @@ void Matriz::mostrar() { // imprimir datos de matriz
 		}
 	}
 }
-
+void Matriz::guardarMovimientos(vector<char> vect) {
+	fstream file;
+	string ruta = ".\\Mapas\\Movimientos.txt";
+	file.open(ruta, ios_base::out);
+	if (!file.is_open()) {
+		cout << "Error abriendo el archivo" << endl;
+	}
+	else {		
+		for (int i = 0; i < vect.size();i++) {
+			file << vect[i];
+		}
+		file.close();
+	}
+}
 void Matriz::guardarPartida(string nombre) { // guardado - ecritura de nivel en documento
 	Nodo* aux = ini, *aux2 = NULL;
 	fstream file;
@@ -194,80 +207,80 @@ bool Matriz::verificarMovimiento(char movimiento)
 				{
 				case 'W': {
 
-						if (aux2->getArriba()->getDato() == "@" || aux2->getArriba()->getDato() == "a" || aux2->getArriba()->getDato() == "#" ) {
-							// si es un jugador,pared
-							mover = false;
+					if (aux2->getArriba()->getDato() == "@" || aux2->getArriba()->getDato() == "a" || aux2->getArriba()->getDato() == "#" ) {
+						// si es un jugador,pared
+						mover = false;
+					}
+					else {
+						if (aux2->getArriba()->getDato() == " " || aux2->getArriba()->getDato() == ".") {
+							//si es espacio en blanco, espacio para colocar una caja
+							mover = true;
 						}
 						else {
-							if (aux2->getArriba()->getDato() == " " || aux2->getArriba()->getDato() == ".") {
-								//si es espacio en blanco, espacio para colocar una caja
-								mover = true;
-							}
-							else {
-								if (aux2->getArriba()->getDato() == "$" || aux2->getArriba()->getDato() == "!") {
-									//si es una caja,Caja ubicada en el espacio donde corresponde
-									if (aux2->getArriba()->getArriba() != NULL) {
+							if (aux2->getArriba()->getDato() == "$" || aux2->getArriba()->getDato() == "!") {
+								//si es una caja,Caja ubicada en el espacio donde corresponde
+								if (aux2->getArriba()->getArriba() != NULL) {
 
-										if (aux2->getArriba()->getArriba()->getDato() == " " || aux2->getArriba()->getArriba()->getDato() == ".") {
-											//si es espacio en blanco, espacio para colocar una caja
-											mover = true;
-										}
-										else {
-											mover = false;
-										}
-
+									if (aux2->getArriba()->getArriba()->getDato() == " " || aux2->getArriba()->getArriba()->getDato() == ".") {
+										//si es espacio en blanco, espacio para colocar una caja
+										mover = true;
 									}
-									else { mover = false; }
+									else {
+										mover = false;
+									}
+
 								}
+								else { mover = false; }
 							}
 						}
+					}
 
 
-						// seccion para aplicar cambios
-						if (mover) {
+					// seccion para aplicar cambios
+					if (mover) {
 
-							if (aux2->getArriba()->getDato() != "$" && aux2->getArriba()->getDato() != "!") { // si arriba diferente de caja
+						if (aux2->getArriba()->getDato() != "$" && aux2->getArriba()->getDato() != "!") { // si arriba diferente de caja
 
 
-								if (aux2->getArriba()->getDato() == " ") {// si arriba igual a espacio en blanco
-									aux2->getArriba()->setDato("@");
-								}
-								else {
-									//si habia espacio para colocar caja
-									aux2->getArriba()->setDato("a");
-								}
-
+							if (aux2->getArriba()->getDato() == " ") {// si arriba igual a espacio en blanco
+								aux2->getArriba()->setDato("@");
 							}
 							else {
-								if (aux2->getArriba()->getArriba()->getDato() == ".") {
-									// si arriba de la caja  habia espacio para colocar caja
-									aux2->getArriba()->getArriba()->setDato("!");
-								}
-								else{
-									aux2->getArriba()->getArriba()->setDato("$");
-								}
-
-								if (aux2->getArriba()->getDato() == "$") {
-									// si donde la caja estaba NO existia punto para colocar una caja
-									aux2->getArriba()->setDato("@");
-								}
-								else { // si la caja estaba ubicada en el espacio donde corresponde
-									aux2->getArriba()->setDato("a");
-								}
-
+								//si habia espacio para colocar caja
+								aux2->getArriba()->setDato("a");
 							}
 
-							// terminar de mover al personaje de la posicion donde estaba
-							if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
-								aux2->setDato(" ");
-							}
-							else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
-								aux2->setDato(".");
-							}
-
-							return true;
 						}
-							return false;
+						else {
+							if (aux2->getArriba()->getArriba()->getDato() == ".") {
+								// si arriba de la caja  habia espacio para colocar caja
+								aux2->getArriba()->getArriba()->setDato("!");
+							}
+							else{
+								aux2->getArriba()->getArriba()->setDato("$");
+							}
+
+							if (aux2->getArriba()->getDato() == "$") {
+								// si donde la caja estaba NO existia punto para colocar una caja
+								aux2->getArriba()->setDato("@");
+							}
+							else { // si la caja estaba ubicada en el espacio donde corresponde
+								aux2->getArriba()->setDato("a");
+							}
+
+						}
+
+						// terminar de mover al personaje de la posicion donde estaba
+						if (aux2->getDato() == "@") {// si es @ debajo habia un espacio en blanco
+							aux2->setDato(" ");
+						}
+						else if (aux2->getDato() == "a") {// si es un a habia espacio para colocar caja
+							aux2->setDato(".");
+						}
+
+						return true;
+					}
+						return false;
 					break;
 				}
 				case 'S': {

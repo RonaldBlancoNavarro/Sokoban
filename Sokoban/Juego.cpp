@@ -10,7 +10,7 @@ Juego::Juego() {
     tiempo = new Time();
     posicion = { 0,0 };
     solucion = false;
-    ventana = new RenderWindow(VideoMode(900, 700), "SOKOBAN");
+    ventana = new RenderWindow(VideoMode(900, 700), "SOKOBAN",Style::Close);
     imagen = new Texture();
     sprite = new Sprite();
     reinicio = new Sprite();
@@ -19,7 +19,7 @@ Juego::Juego() {
     sprite->setScale((float)ventana->getSize().x / sprite->getTexture()->getSize().x, (float)ventana->getSize().y / sprite->getTexture()->getSize().y); // tama�o deseado dividido tama�o actual
 
     Image img;
-    img.loadFromFile("caja.png");
+    img.loadFromFile("Icono.png");
     ventana->setIcon(img.getSize().x, img.getSize().y, img.getPixelsPtr());
 
     font = new Font();
@@ -64,7 +64,7 @@ Juego::Juego() {
     textureL = new Texture();
     textureL->loadFromFile("ladrillo.png");
     textureC1 = new Texture();
-    textureC1->loadFromFile("caja1.png");
+    textureC1->loadFromFile("caja.png");
     textureP = new Texture();
     textureP->loadFromFile("personaje.png");
     reiniciar = new Texture();
@@ -166,7 +166,8 @@ void Juego::graficar()
             btnCargarJuego->setEstadoBoton(BTN_INACTIVO);
             nivelSolucion.clear();
             mat->limpiarMatriz();
-            mat->cargarMatriz("CargarPartida");
+            cargarMovimientos();
+            mat->cargarMatriz("Partida");
             estadoSubmenu = SBMN_PARTIDA;
         }
 
@@ -241,11 +242,13 @@ void Juego::graficar()
         if (btnAtras->procesarBoton(&*ventana)) {          
             btnAtras->setEstadoBoton(BTN_INACTIVO);
             nivelSolucion.clear();
-            estadoSubmenu = SBMN_SOLUCIONNIVEL;
+            estadoSubmenu = SBMN_NUEVOJUEGO;
         }
         if (btnGuardarPartida->procesarBoton(&*ventana)) { 
-            mat->guardarPartida("CargarPartida");
-            btnGuardarPartida->setEstadoBoton(BTN_INACTIVO);         
+            mat->guardarPartida("Partida");
+            mat->guardarMovimientos(nivelSolucion);
+            btnGuardarPartida->setEstadoBoton(BTN_INACTIVO);
+            estadoSubmenu = SBMN_INACTIVO;
         }
         if (btnReiniciarNivel->procesarBoton(&*ventana)) {
             mat->limpiarMatriz();
@@ -316,11 +319,11 @@ void Juego::graficarDato(string dato) {
         ventana->draw(*spritePos);
     }
     else if (dato == "@" || dato == "a") {// @ = jugador ... a = jugador sobre espacio para colocar una caja
-        spritePos = new Sprite();
-        spritePos->setTexture(*textureP);
-        spritePos->setScale(50.f / spritePos->getTexture()->getSize().x, 50.f / spritePos->getTexture()->getSize().y); // tamaño deseado dividido entre tamaño actual
-        spritePos->setPosition(posicion);
-        ventana->draw(*spritePos);
+        personaje = new Sprite();
+        personaje->setTexture(*textureP);
+        personaje->setScale(50.f / personaje->getTexture()->getSize().x, 50.f / personaje->getTexture()->getSize().y); // tamaño deseado dividido entre tamaño actual
+        personaje->setPosition(posicion);
+        ventana->draw(*personaje);
 
         if (dato == "a") { // push en pila !
             pila->push(dato);
@@ -430,5 +433,28 @@ void Juego::solucionNivel() {
     else {
         solucion = false;
         contMov = 0;
+    }
+}
+
+void Juego::cargarMovimientos() {
+    ifstream file;
+    int i = 0;
+    char caracter;
+    bool primeraFila = true;
+    bool primeraColumna = false;
+    file.open(".\\Mapas\\Movimientos.txt");
+    nivelSolucion.clear();
+    if (!file) {
+        cout << "No se encontro el archivo" << endl;
+    }
+    else {
+        while (!file.eof()) {
+            caracter = file.get();
+            if (!file.eof()) {
+                nivelSolucion.push_back(caracter);
+            }
+            i++;
+        }
+        file.close();
     }
 }

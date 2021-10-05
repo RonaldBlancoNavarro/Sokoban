@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "Nodo.h"
+#include <vector>
 
 using namespace std;
 class Matriz
@@ -25,5 +26,6 @@ public:
 	void mostrar();
 	bool verificarMovimiento(char movimiento);
 	void guardarPartida(string);
+	void guardarMovimientos(vector<char>);
 };
 #endif

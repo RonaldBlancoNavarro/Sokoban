@@ -56,7 +56,7 @@ private:
 	Texture* reiniciar;
 	Sprite* spritePos;
 	Sprite* reinicio;
-
+	Sprite* personaje;
 	stack<string>* pila;
 
 	vector<char> nivelSolucion;
@@ -74,4 +74,5 @@ public:
 	void movientoPersonaje(Event event);
 	void solucionNivel();
 	bool finalizarNivel();
+	void cargarMovimientos();
 };
