@@ -9,7 +9,7 @@ The player controls the character with the arrow keys, and moves are validated b
 Language: Spanish.
 
 
-## Autores
+## Authors
 
 - [Ronald Blanco Navarro](rblanconavarro@gmail.com)
 - [Keiner Godínez Aguilar](keinergodinez@gmail.com)
